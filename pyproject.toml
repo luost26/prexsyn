@@ -1,0 +1,67 @@
+[project]
+name = "prexsyn"
+dynamic = ["version"]
+requires-python = ">=3.11"
+authors = [{ name = "Shitong Luo", email = "luost26@gmail.com" }]
+readme = "README.md"
+license-files = ["LICENSE"]
+dependencies = [
+  "click>=8.3.0",
+  "hydra-core>=1.3.2",
+  "joblib>=1.5.2",
+  "lightning>=2.5.5",
+  "lmdb>=1.7.3",
+  "matplotlib>=3.10.7",
+  "numpy>=2.3.0,<3",
+  "omegaconf>=2.3.0",
+  "pandas>=2.3.3",
+  "pydot>=4.0.1",
+  "rdkit>=2025.3.6,<2026",
+  "rich>=14.2.0",
+  "scikit-learn>=1.7.2",
+  "seaborn>=0.13.2",
+  "torch>=2.8.0",
+  "tqdm>=4.67.1",
+  "wandb>=0.22.2",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "prexsyn.__version__" }
+
+[tool.black]
+line-length = 119
+
+[tool.isort]
+extra_standard_library = "typing_extensions,mypy,mypy_extensions"
+profile = "black"
+
+[tool.autoflake]
+remove-all-unused-imports = true
+expand-star-imports = true
+ignore-init-module-imports = true
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = [
+  "tests",
+  "docs",
+  "build",
+  "dist",
+  ".eggs",
+  ".tox",
+  ".venv",
+  ".env",
+  "__pycache__",
+]
+strict = true
+disallow_subclassing_any = false
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "flake8>=7.3.0",
+    "isort>=6.1.0",
+    "mypy>=1.18.2",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+]

@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.1
+    hooks:
+    - id: pyupgrade
+      args: 
+      - "--py311-plus"
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+    - id: autoflake
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+    - id: isort
+      name: isort (python)
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+    - id: black
+      language_version: python3.11
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.2.0
+    hooks:
+    - id: flake8
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+    - id: mypy
+      exclude: ^tests/
+      additional_dependencies: [types-PyYAML, numpy]
