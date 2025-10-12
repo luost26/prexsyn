@@ -6,22 +6,22 @@ authors = [{ name = "Shitong Luo", email = "luost26@gmail.com" }]
 readme = "README.md"
 license-files = ["LICENSE"]
 dependencies = [
-  "click>=8.3.0,<9",
-  "hydra-core>=1.3.2,<2",
-  "joblib>=1.5.2,<2",
-  "lightning>=2.5.5,<3",
-  "lmdb>=1.7.3,<2",
-  "matplotlib>=3.10.6,<4",
-  "numpy>=2.3.3,<3",
-  "omegaconf>=2.3.0,<3",
-  "pandas>=2.3.3,<3",
-  "pydot>=4.0.1,<5",
-  "rich>=14.2.0,<15",
-  "scikit-learn>=1.7.2,<2",
-  "seaborn>=0.13.2,<0.14",
-  "torch>=2.8.0,<3",
-  "tqdm>=4.67.1,<5",
-  "wandb>=0.22.2,<0.23",
+    "click>=8.3.0,<9",
+    "hydra-core>=1.3.2,<2",
+    "joblib>=1.5.2,<2",
+    "lightning>=2.5.5,<3",
+    "lmdb>=1.7.3,<2",
+    "matplotlib>=3.10.6,<4",
+    "numpy>=2.3.3,<3",
+    "omegaconf>=2.3.0,<3",
+    "pandas>=2.3.3,<3",
+    "pydot>=4.0.1,<5",
+    "rich>=14.2.0,<15",
+    "scikit-learn>=1.7.2,<2",
+    "seaborn>=0.13.2,<0.14",
+    "torch>=2.8.0,<3",
+    "tqdm>=4.67.1,<5",
+    "wandb>=0.22.2,<0.23",
 ]
 
 [tool.setuptools.packages.find]
@@ -46,15 +46,15 @@ ignore-init-module-imports = true
 [tool.mypy]
 ignore_missing_imports = true
 exclude = [
-  "tests",
-  "docs",
-  "build",
-  "dist",
-  ".eggs",
-  ".tox",
-  ".venv",
-  ".env",
-  "__pycache__",
+    "tests",
+    "docs",
+    "build",
+    "dist",
+    ".eggs",
+    ".tox",
+    ".venv",
+    ".env",
+    "__pycache__",
 ]
 strict = true
 disallow_subclassing_any = false
@@ -77,12 +77,34 @@ platforms = ["linux-64"]
 prexsyn = { path = ".", editable = true }
 
 [tool.pixi.environments]
-default = { solve-group = "default" }
-dev = { features = ["dev"], solve-group = "default" }
+default = { features = ["prod-engine"], solve-group = "default" }
+dev = { features = ["dev", "prod-engine"], solve-group = "default" }
+dev-engine = { features = ["dev", "dev-engine"], solve-group = "default" }
 
 [tool.pixi.tasks]
 
 [tool.pixi.dependencies]
-python = ">=3.13.0,<3.14"
+python = ">=3.11.0,<3.14"
 rdkit = ">=2025.3.6"
-prexsyn-engine = { url = "file:///mnt/home/luost/ws/output/linux-64/prexsyn-engine-0.1.0-py313hf70daa8_0.conda" }
+
+[tool.pixi.feature.prod-engine.dependencies]
+# Placeholder for prexsyn-engine conda package
+
+[tool.pixi.feature.dev-engine.dependencies]
+librdkit-dev = ">=2025.3.6"
+libboost-python-devel = ">=1.86.0,<2"
+cmake = ">=4.1.1,<5"
+ninja = ">=1.13.1,<2"
+clang = "==21.1.0"
+clangxx = "==21.1.0"
+llvm-openmp = "==21.1.0"
+eigen = ">=3.4.0,<4"
+libboost-devel = ">=1.86.0,<2"
+spdlog = ">=1.15.3,<2"
+clang-tools = "==21.1.0"
+llvm-tools = "==21.1.0"
+compiler-rt = "==21.1.0"
+gtest = ">=1.14.0,<2"
+
+[tool.pixi.feature.dev-engine.pypi-dependencies]
+prexsyn-engine = { path = "../prexsyn-engine", editable = true }
