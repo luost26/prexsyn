@@ -6,24 +6,28 @@ authors = [{ name = "Shitong Luo", email = "luost26@gmail.com" }]
 readme = "README.md"
 license-files = ["LICENSE"]
 dependencies = [
-  "click>=8.3.0",
-  "hydra-core>=1.3.2",
-  "joblib>=1.5.2",
-  "lightning>=2.5.5",
-  "lmdb>=1.7.3",
-  "matplotlib>=3.10.7",
-  "numpy>=2.3.0,<3",
-  "omegaconf>=2.3.0",
-  "pandas>=2.3.3",
-  "pydot>=4.0.1",
-  "rdkit>=2025.3.6,<2026",
-  "rich>=14.2.0",
-  "scikit-learn>=1.7.2",
-  "seaborn>=0.13.2",
-  "torch>=2.8.0",
-  "tqdm>=4.67.1",
-  "wandb>=0.22.2",
+  "click>=8.3.0,<9",
+  "hydra-core>=1.3.2,<2",
+  "joblib>=1.5.2,<2",
+  "lightning>=2.5.5,<3",
+  "lmdb>=1.7.3,<2",
+  "matplotlib>=3.10.6,<4",
+  "numpy>=2.3.3,<3",
+  "omegaconf>=2.3.0,<3",
+  "pandas>=2.3.3,<3",
+  "pydot>=4.0.1,<5",
+  "rdkit>=2025.3.6",
+  "rich>=14.2.0,<15",
+  "scikit-learn>=1.7.2,<2",
+  "seaborn>=0.13.2,<0.14",
+  "torch>=2.8.0,<3",
+  "tqdm>=4.67.1,<5",
+  "wandb>=0.22.2,<0.23",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["prexsyn"]
 
 [tool.setuptools.dynamic]
 version = { attr = "prexsyn.__version__" }
@@ -65,3 +69,20 @@ dev = [
     "pre-commit>=4.3.0",
     "pytest>=8.4.2",
 ]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+prexsyn = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+python = ">=3.13.0,<3.14"
+prexsyn-engine = { url = "file:///mnt/home/luost/ws/output/linux-64/prexsyn-engine-0.1.0-py313hf70daa8_0.conda" }
