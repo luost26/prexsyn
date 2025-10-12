@@ -1,0 +1,8 @@
+*
+!.gitignore
+!reactions
+!reactions/*.txt
+!building_blocks
+!building_blocks/.gitkeep
+!chemical_spaces
+!chemical_spaces/.gitkeep
