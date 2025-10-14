@@ -40,9 +40,9 @@ class ChemicalSpace:
         building_block_path = pathlib.Path(building_block_path)
         reaction_path = pathlib.Path(reaction_path)
         cache_dir = pathlib.Path(cache_dir)
-        exists = all((cache_dir / file_name).exists() for file_name in cls._data_files)
+        exists = list((cache_dir / file_name).exists() for file_name in cls._data_files)
 
-        if not exists:
+        if not any(exists):
             csd = (
                 ChemicalSpaceDefinitionBuilder()
                 .building_blocks_from_sdf(building_block_path.as_posix())
@@ -54,6 +54,12 @@ class ChemicalSpace:
             )
             cache_dir.mkdir(parents=True, exist_ok=True)
             csd.save(str(cache_dir))
+        elif not all(exists):
+            missing = [file_name for file_name, file_exists in zip(cls._data_files, exists) if not file_exists]
+            raise FileNotFoundError(
+                f"Cache directory '{cache_dir}' is incomplete. Missing files: {', '.join(missing)}. "
+                "Please remove the directory and re-generate the chemical space cache."
+            )
 
         return cls(cache_dir)
 
