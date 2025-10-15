@@ -71,7 +71,7 @@ class ECFP4(StandardFingerprintProperty):
 
     @property
     def fp_type(self) -> str:
-        return "ECFP4"
+        return "ecfp4"
 
     @property
     def fp_dim(self) -> int:
@@ -84,7 +84,7 @@ class FCFP4(StandardFingerprintProperty):
 
     @property
     def fp_type(self) -> str:
-        return "FCFP4"
+        return "fcfp4"
 
     @property
     def fp_dim(self) -> int:
