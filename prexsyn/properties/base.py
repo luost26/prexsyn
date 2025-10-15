@@ -1,13 +1,13 @@
 import abc
 import dataclasses
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
 import torch
 from rdkit import Chem
 from torch import nn
 
-from prexsyn_engine.featurizer.base import Featurizer
+from prexsyn_engine.featurizer.base import Featurizer, FeaturizerSet
 from prexsyn_engine.synthesis import Synthesis
 
 
@@ -102,3 +102,20 @@ class BasePropertyDef(abc.ABC):
 
     def evaluate_synthesis(self, synthesis: Synthesis | list[Synthesis]) -> Mapping[str, torch.Tensor]:
         raise NotImplementedError(f"Property '{self.name}' does not support synthesis evaluation.")
+
+
+class PropertySet:
+    def __init__(self, properties: Sequence[BasePropertyDef]) -> None:
+        super().__init__()
+        self._properties = list(properties)
+        self._property_map = {p.name: p for p in self._properties}
+
+    def get_featurizer_set(self) -> tuple[FeaturizerSet, set[str]]:
+        fs = FeaturizerSet()
+        names: set[str] = set()
+        for p in self._properties:
+            f = p.get_featurizer()
+            if f is not None:
+                fs.add(f)
+                names.add(p.name)
+        return fs, names
