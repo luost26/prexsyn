@@ -1,4 +1,5 @@
 import pathlib
+from typing import Any
 
 from prexsyn_engine.building_block_list import BuildingBlockList
 from prexsyn_engine.chemspace import (
@@ -20,15 +21,24 @@ class ChemicalSpace:
     def __init__(self, data_dir: str | pathlib.Path) -> None:
         super().__init__()
         self._data_dir = pathlib.Path(data_dir)
+        self._csd: ChemicalSpaceDefinition | None = None
+        self.check_files()
 
+    def check_files(self) -> None:
         for file in self._data_files:
             if not (self._data_dir / file).exists():
                 raise FileNotFoundError(
-                    f"Required data file '{file}' not found in '{data_dir}'. "
+                    f"Required data file '{file}' not found in '{self._data_dir}'. "
                     "Please remove the directory and re-generate the chemical space cache."
                 )
 
-        self._csd: ChemicalSpaceDefinition | None = None
+    def __getstate__(self) -> dict[str, str]:
+        return {"data_dir": self._data_dir.as_posix()}
+
+    def __setstate__(self, state: Any) -> None:
+        self._data_dir = pathlib.Path(state["data_dir"])
+        self._csd = None
+        self.check_files()
 
     @classmethod
     def load_or_create(
