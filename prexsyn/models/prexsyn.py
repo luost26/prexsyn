@@ -8,7 +8,7 @@ from prexsyn.data.struct import EmbedderName, PropertyRepr, SynthesisRepr
 
 from .attention import TransformerLayer
 from .embeddings import Embedding, SynthesisEmbedder
-from .synthesis_output import SynthesisOutput
+from .outputs.synthesis import SynthesisOutput
 
 
 class PrexSyn(nn.Module):
