@@ -6,7 +6,7 @@ import torch
 from rdkit import Chem
 from torch import nn
 
-from prexsyn.models.property_embedder import BasePropertyEmbedder
+from prexsyn.models.embeddings import BasePropertyEmbedder
 from prexsyn_engine.featurizer.base import Featurizer, FeaturizerSet
 from prexsyn_engine.synthesis import Synthesis
 
