@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Generator, Mapping
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -104,3 +104,7 @@ class OnlineSynthesisDataset:
             "property_repr": property_repr,
         }
         return out
+
+    def __iter__(self) -> Generator[SynthesisTrainingBatch, Any, None]:
+        for idx in range(len(self)):
+            yield self[idx]

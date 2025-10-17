@@ -58,6 +58,14 @@ class PropertySet:
         self._property_map[prop.name] = prop
         return self
 
+    def subset(self, names: Sequence[str]) -> "PropertySet":
+        new_props = []
+        for name in names:
+            if name not in self._property_map:
+                raise ValueError(f"Property with name '{name}' does not exist in the property set.")
+            new_props.append(self._property_map[name])
+        return PropertySet(new_props)
+
     def get_featurizer_set(self) -> tuple[FeaturizerSet, set[str]]:
         fs = FeaturizerSet()
         names: set[str] = set()

@@ -10,3 +10,12 @@ hydra:
     subdir: ${hydra.job.num}
 
 tokenization: {} # nothing to set here
+
+data:
+  batch_size: 1024
+  num_threads: 16
+  virtual_length: 2000
+
+  val_properties: ["ecfp4"]
+  num_val_batches: 10
+  val_base_seed: 2025
