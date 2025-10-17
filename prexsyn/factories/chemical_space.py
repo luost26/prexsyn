@@ -1,4 +1,5 @@
 import pathlib
+from collections.abc import Mapping
 from typing import Any
 
 from prexsyn_engine.building_block_list import BuildingBlockList
@@ -72,6 +73,10 @@ class ChemicalSpace:
             )
 
         return cls(cache_dir)
+
+    @classmethod
+    def from_config(cls, cfg: Mapping[str, Any]) -> "ChemicalSpace":
+        return cls.load_or_create(**cfg)
 
     def count_building_blocks(self) -> int:
         if self._csd is None:

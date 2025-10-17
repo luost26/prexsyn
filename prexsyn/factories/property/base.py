@@ -1,7 +1,9 @@
 import abc
+import importlib
 from collections.abc import Mapping, Sequence
 from typing import Self
 
+import omegaconf
 import torch
 from rdkit import Chem
 from torch import nn
@@ -34,6 +36,20 @@ class PropertySet:
         super().__init__()
         self._properties = list(properties)
         self._property_map = {p.name: p for p in self._properties}
+
+    @classmethod
+    def from_config(cls, cfg: omegaconf.ListConfig) -> Self:
+        obj = cls([])
+        for item in cfg:
+            module_name, class_name = item["class"].rsplit(".", 1)
+            module = importlib.import_module(module_name)
+            prop_class = getattr(module, class_name)
+            if not issubclass(prop_class, BasePropertyDef):
+                raise ValueError(f"Class '{class_name}' is not a subclass of BasePropertyDef.")
+            params = item.get("params", {})
+            prop_instance = prop_class(**params)
+            obj.add(prop_instance)
+        return obj
 
     def add(self, prop: BasePropertyDef) -> Self:
         if prop.name in self._property_map:
