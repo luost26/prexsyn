@@ -1,0 +1,3 @@
+building_block_path: data/building_blocks/Enamine_Rush-Delivery_Building_Blocks-US_223244cmpd_20231001.sdf
+reaction_path: data/reactions/rxn115.txt
+cache_dir: data/chemical_spaces/enamine_rxn115

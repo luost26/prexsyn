@@ -1,0 +1,12 @@
+defaults:
+- chemical_space: enamine_rxn115
+- property: v1
+
+hydra:
+  run:
+    dir: logs/${hydra.runtime.choices.chemical_space}/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: logs/${hydra.runtime.choices.chemical_space}/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}
+
+tokenization: {} # nothing to set here

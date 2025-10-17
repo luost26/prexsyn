@@ -1,0 +1,13 @@
+- class: prexsyn.factories.property.fingerprint.ECFP4
+  params:
+    name: ecfp4
+- class: prexsyn.factories.property.fingerprint.FCFP4
+  params:
+    name: fcfp4
+- class: prexsyn.factories.property.rdkit_descriptors.RDKitDescriptors
+  params:
+    name: rdkit_descriptors
+    num_evaluated_descriptors: 4
+- class: prexsyn.factories.property.rdkit_descriptors.RDKitDescriptorUpperBounds
+  params:
+    name: rdkit_descriptor_upper_bounds
