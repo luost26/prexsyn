@@ -1,0 +1,5 @@
+dim: 1024
+nhead: 16
+dim_feedforward: 2048
+num_layers: 12
+bb_embed_dim: 1024

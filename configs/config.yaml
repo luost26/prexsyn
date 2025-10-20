@@ -1,6 +1,7 @@
 defaults:
 - chemical_space: enamine_rxn115
 - property: v1
+- model: v1
 
 hydra:
   run:
