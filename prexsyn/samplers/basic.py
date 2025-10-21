@@ -76,4 +76,7 @@ class BasicSampler:
 
                 next = self._predict_and_sample(h_syn[..., -1:, :], builder.ended)
                 builder.append(**next)
+
+                if builder.ended.all():
+                    break
         return builder.get()
