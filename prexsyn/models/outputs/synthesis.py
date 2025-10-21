@@ -11,6 +11,52 @@ class Prediction:
     bb_logits: torch.Tensor
     rxn_logits: torch.Tensor
 
+    bb_token: int
+    rxn_token: int
+
+    def flatten(self) -> "FlattenedPrediction":
+        type_logp = nn.functional.log_softmax(self.type_logits, dim=-1)
+        type_bb_logp = type_logp[..., self.bb_token].unsqueeze(-1)
+        type_rxn_logp = type_logp[..., self.rxn_token].unsqueeze(-1)
+        bb_logp = nn.functional.log_softmax(self.bb_logits, dim=-1) + type_bb_logp
+        rxn_logp = nn.functional.log_softmax(self.rxn_logits, dim=-1) + type_rxn_logp
+
+        type_logp[..., self.bb_token] = float("-inf")
+        type_logp[..., self.rxn_token] = float("-inf")
+
+        logp = torch.cat([bb_logp, rxn_logp, type_logp], dim=-1)
+        return FlattenedPrediction(
+            logp,
+            num_building_blocks=self.bb_logits.shape[-1],
+            num_reactions=self.rxn_logits.shape[-1],
+            bb_token=self.bb_token,
+            rxn_token=self.rxn_token,
+        )
+
+
+@dataclasses.dataclass(frozen=True)
+class FlattenedPrediction:
+    logp: torch.Tensor
+
+    num_building_blocks: int
+    num_reactions: int
+    bb_token: int
+    rxn_token: int
+
+    def unflatten_tokens(self, tokens: torch.Tensor) -> dict[str, torch.Tensor]:
+        n_bb_rxn = self.num_building_blocks + self.num_reactions
+        is_bb = torch.where(tokens < self.num_building_blocks, True, False)
+        is_rxn = torch.where((tokens >= self.num_building_blocks) & (tokens < n_bb_rxn), True, False)
+
+        token_types = torch.where(is_bb, self.bb_token, torch.where(is_rxn, self.rxn_token, tokens - n_bb_rxn))
+        bb_indices = torch.where(is_bb, tokens, 0)
+        rxn_indices = torch.where(is_rxn, tokens - self.num_building_blocks, 0)
+        return {
+            "token_types": token_types,
+            "bb_indices": bb_indices,
+            "rxn_indices": rxn_indices,
+        }
+
 
 class SynthesisOutput(nn.Module):
     def __init__(
@@ -92,6 +138,8 @@ class SynthesisOutput(nn.Module):
             type_logits=self.token_head(h),
             bb_logits=self.bb_head(h),
             rxn_logits=self.rxn_head(h),
+            bb_token=self.bb_token,
+            rxn_token=self.rxn_token,
         )
 
     def predict_type(self, h: torch.Tensor) -> torch.Tensor:
