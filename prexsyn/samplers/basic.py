@@ -12,6 +12,7 @@ class BasicSampler:
         self,
         model: PrexSyn,
         token_def: PostfixNotationTokenDef,
+        num_samples: int,
         t_types: float = 1.0,
         t_bb: float = 1.0,
         t_rxn: float = 1.0,
@@ -20,6 +21,7 @@ class BasicSampler:
         super().__init__()
         self.model = model
         self.token_def = token_def
+        self.num_samples = num_samples
         self.t_types = t_types
         self.t_bb = t_bb
         self.t_rxn = t_rxn
@@ -65,11 +67,11 @@ class BasicSampler:
             "rxn_indices": next_rxn.reshape(batch_shape),
         }
 
-    def sample(self, property_repr: PropertyRepr, repeat: int = 1) -> SynthesisRepr:
+    def sample(self, property_repr: PropertyRepr) -> SynthesisRepr:
         with torch.no_grad():
             e_property = self.model.embed_properties(property_repr)
-            if repeat > 1:
-                e_property = e_property.repeat(repeat)
+            if self.num_samples > 1:
+                e_property = e_property.repeat(self.num_samples)
             batch_size = e_property.batch_size
             builder = self._create_builder(batch_size)
             for _ in range(self.max_length):

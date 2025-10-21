@@ -61,12 +61,11 @@ def generate_analogs(
     detokenizer: Detokenizer,
     fp_property: StandardFingerprintProperty,
     mol: Chem.Mol,
-    num_samples: int = 128,
     eval_fp_type: str = "ecfp4",
 ) -> AnalogGenerationResult:
     t_start = time.perf_counter()
     property_repr = {fp_property.name: move_to_device(fp_property.evaluate_mol(mol), model.device)}
-    synthesis_repr = sampler.sample(property_repr, repeat=num_samples)
+    synthesis_repr = sampler.sample(property_repr)
     syn_list = detokenizer(
         token_types=synthesis_repr["token_types"].cpu().numpy(),
         bb_indices=synthesis_repr["bb_indices"].cpu().numpy(),
