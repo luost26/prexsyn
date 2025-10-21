@@ -8,7 +8,6 @@ from pytorch_lightning.loggers import WandbLogger
 
 from prexsyn.data.struct import SynthesisTrainingBatch
 from prexsyn.factories.facade import Facade
-from prexsyn.models.prexsyn import PrexSyn
 from prexsyn.samplers.basic import BasicSampler
 from prexsyn.utils.draw import draw_synthesis, make_grid
 from prexsyn_engine.fingerprints import tanimoto_similarity
@@ -29,18 +28,7 @@ class PrexSynWrapper(pl.LightningModule):
         self.save_hyperparameters(cfg)
         self.facade = Facade(cfg)
         self.model_dim: int = cfg.model.dim
-        self.model = PrexSyn(
-            **cfg.model,
-            property_embedders=self.facade.property_set.get_embedders(model_dim=self.model_dim),
-            num_token_types=self.facade.tokenization.token_def.num_token_types,
-            max_bb_index=self.facade.chemical_space.count_building_blocks() - 1,
-            max_rxn_index=self.facade.chemical_space.count_reactions() - 1,
-            pad_token=self.facade.tokenization.token_def.PAD,
-            end_token=self.facade.tokenization.token_def.END,
-            start_token=self.facade.tokenization.token_def.START,
-            bb_token=self.facade.tokenization.token_def.BB,
-            rxn_token=self.facade.tokenization.token_def.RXN,
-        )
+        self.model = self.facade.build_model()
 
     def configure_optimizers(self) -> Any:
         optimizers = [torch.optim.AdamW(self.parameters(), lr=self.hparams["training"]["optimizer"]["lr"])]
