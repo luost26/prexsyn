@@ -112,6 +112,10 @@ def main(model_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, devi
         for dataset_name, df in datasets.items():
             for num_samples in num_samples_grid:
                 for run_idx in range(num_runs):
+                    print(
+                        f"Running benchmark: dataset={dataset_name}, "
+                        f"num_samples={num_samples}, run_idx={run_idx}({num_runs})"
+                    )
                     output_path = output_dir / f"{dataset_name}_{num_samples}_{run_idx}.out"
                     summary_this = _run(
                         facade=facade,
@@ -130,6 +134,39 @@ def main(model_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, devi
 
     summary_df = pd.concat(summary_list, ignore_index=True)
     summary_df.to_csv(output_dir / "summary.csv", index=False)
+
+    pd.set_option("display.float_format", "{:.4f}".format)
+
+    summary_df["reconstructed"] = summary_df["similarity"] == 1.0
+    recons_df = (
+        summary_df.groupby(["dataset", "num_samples", "run_idx"])
+        .aggregate(
+            similarity=("similarity", "mean"),
+            recons=("reconstructed", "mean"),
+        )
+        .reset_index()
+    )
+    recons_stat = (
+        recons_df.groupby(["dataset", "num_samples"])
+        .aggregate(
+            similarity_mean=("similarity", "mean"),
+            similarity_std=("similarity", "std"),
+            recons_mean=("recons", "mean"),
+            recons_std=("recons", "std"),
+        )
+        .reset_index()
+    )
+    print(recons_stat)
+
+    time_stat = (
+        summary_df.groupby(["num_samples"])
+        .aggregate(
+            time_mean=("time", "mean"),
+            time_std=("time", "std"),
+        )
+        .reset_index()
+    )
+    print(time_stat)
 
 
 if __name__ == "__main__":
