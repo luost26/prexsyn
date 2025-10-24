@@ -6,7 +6,7 @@ from torch import nn
 
 from prexsyn.data.struct import PropertyRepr
 from prexsyn.models.embeddings import BasePropertyEmbedder, Embedding
-from prexsyn.queries import Condition
+from prexsyn.queries import Condition, Not
 from prexsyn_engine.featurizer.rdkit_descriptors import RDKitDescriptorsFeaturizer
 from prexsyn_engine.synthesis import Synthesis
 
@@ -199,8 +199,31 @@ class RDKitDescriptors(BasePropertyDef):
         return RDKitDescriptorsCondition(specs=specs, property_def=self, weight=weight)
 
 
-class RDKitDescriptorUpperBounds(BasePropertyDef):
-    def __init__(self, name: str = "rdkit_descriptor_upper_bounds") -> None:
+class RDKitDescriptorUpperBoundCondition(Condition):
+    def __init__(
+        self, name: str, upper_bound: float, property_def: "RDKitDescriptorUpperBound", weight: float = 1.0
+    ) -> None:
+        super().__init__(weight=weight)
+        self.property_def = property_def
+        if name not in property_def.available_descriptors:
+            raise ValueError(f"Descriptor '{name}' is not available in RDKitDescriptors.")
+        self.name = name
+        self.type = torch.tensor([[property_def.available_descriptors.index(name)]], dtype=torch.long)
+        self.upper_bound = torch.tensor([[upper_bound]], dtype=torch.float)
+
+    def get_property_repr(self) -> PropertyRepr:
+        return {self.property_def.name: {"types": self.type, "values": self.upper_bound}}
+
+    def score(self, synthesis: Synthesis, product: Chem.Mol) -> float:
+        # TODO: implement scoring
+        raise NotImplementedError("Scoring for RDKitDescriptorUpperBoundCondition is not implemented.")
+
+    def __repr__(self) -> str:
+        return f"{self.name}<={self.upper_bound.item():.2f}"
+
+
+class RDKitDescriptorUpperBound(BasePropertyDef):
+    def __init__(self, name: str = "rdkit_descriptor_upper_bound") -> None:
         super().__init__()
         self._name = name
 
@@ -211,9 +234,19 @@ class RDKitDescriptorUpperBounds(BasePropertyDef):
     def get_featurizer(self) -> RDKitDescriptorsFeaturizer:
         return RDKitDescriptorsFeaturizer(name=self._name, num_evaluated_descriptors=1)
 
+    @property
+    def available_descriptors(self) -> list[str]:
+        return list(self.get_featurizer().descriptor_names)
+
     def get_embedder(self, model_dim: int) -> ScalarPropertyUpperBoundEmbedder:
         return ScalarPropertyUpperBoundEmbedder(
             max_property_types=100,
             embedding_dim=model_dim,
             num_tokens=4,
         )
+
+    def lt(self, name: str, value: float, weight: float = 1.0) -> RDKitDescriptorUpperBoundCondition:
+        return RDKitDescriptorUpperBoundCondition(name=name, upper_bound=value, property_def=self, weight=weight)
+
+    def gt(self, name: str, value: float, weight: float = 1.0) -> Not:
+        return Not(self.lt(name=name, value=value, weight=weight))

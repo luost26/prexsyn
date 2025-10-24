@@ -8,6 +8,6 @@
   params:
     name: rdkit_descriptors
     num_evaluated_descriptors: 4
-- class: prexsyn.factories.property.rdkit_descriptors.RDKitDescriptorUpperBounds
+- class: prexsyn.factories.property.rdkit_descriptors.RDKitDescriptorUpperBound
   params:
-    name: rdkit_descriptor_upper_bounds
+    name: rdkit_descriptor_upper_bound
