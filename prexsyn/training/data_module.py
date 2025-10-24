@@ -5,9 +5,10 @@ import pytorch_lightning as pl
 from omegaconf import DictConfig
 from torch.utils.data import DataLoader, Dataset
 
-from prexsyn.data.online_dataset import OnlineSynthesisDataset
 from prexsyn.data.struct import SynthesisTrainingBatch
 from prexsyn.factories.facade import Facade
+
+from .online_dataset import OnlineSynthesisDataset
 
 
 class SynthesisDataModule(pl.LightningDataModule):
