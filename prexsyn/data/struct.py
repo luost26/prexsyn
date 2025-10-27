@@ -24,6 +24,17 @@ def concat_synthesis_reprs(*reprs: "SynthesisRepr") -> "SynthesisRepr":
 PropertyRepr: TypeAlias = Sequence[Mapping[EmbedderName, EmbedderParams]] | Mapping[EmbedderName, EmbedderParams]
 
 
+def get_property_repr_batch_size(prop_repr: PropertyRepr) -> int:
+    if isinstance(prop_repr, Sequence):
+        return sum(get_property_repr_batch_size(pr) for pr in prop_repr)
+
+    batch_size = 0
+    for _, embedder_params in prop_repr.items():
+        for param in embedder_params.values():
+            batch_size = max(batch_size, param.shape[0])
+    return batch_size
+
+
 class SynthesisTrainingBatch(TypedDict):
     synthesis_repr: SynthesisRepr
     property_repr: PropertyRepr

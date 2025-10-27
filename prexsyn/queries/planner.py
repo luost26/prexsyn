@@ -4,21 +4,10 @@ from typing import Any, Literal
 import torch
 from rdkit import Chem
 
-from prexsyn.data.struct import PropertyRepr
+from prexsyn.data.struct import PropertyRepr, get_property_repr_batch_size
 from prexsyn_engine.synthesis import Synthesis
 
 from .base import DNF, Query, to_dnf
-
-
-def _property_repr_size(prop_repr: PropertyRepr) -> int:
-    if isinstance(prop_repr, Sequence):
-        return sum(_property_repr_size(pr) for pr in prop_repr)
-
-    batch_size = 0
-    for _, embedder_params in prop_repr.items():
-        for param in embedder_params.values():
-            batch_size = max(batch_size, param.shape[0])
-    return batch_size
 
 
 class QueryPlanner:
@@ -35,7 +24,7 @@ class QueryPlanner:
             prop_repr_conj: list[Any] = []
             for condition, _ in conjunction:
                 prop_repr_this = condition.get_property_repr()
-                if _property_repr_size(prop_repr_this) != 1:
+                if get_property_repr_batch_size(prop_repr_this) != 1:
                     raise ValueError("Each condition's property representation must have exactly batch size 1.")
 
                 if isinstance(prop_repr_this, Sequence):
