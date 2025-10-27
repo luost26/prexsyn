@@ -9,7 +9,7 @@ from prexsyn.samplers.basic import BasicSampler
 from prexsyn_engine.detokenizer import Detokenizer
 from prexsyn_engine.fingerprints import mol_to_syntheses_tanimoto_similarity
 
-from .db import AnalogGenerationResult
+from .data import AnalogGenerationResult
 
 
 def generate_analogs(
