@@ -163,7 +163,11 @@ class RDKitDescriptors(BasePropertyDef):
 
     @property
     def available_descriptors(self) -> dict[str, int]:
-        return {name: i + 1 for i, name in enumerate(self.get_featurizer().descriptor_names)}
+        out: dict[str, int] = {}
+        featurizer = self.get_featurizer()
+        for name in featurizer.get_descriptor_names():
+            out[name] = featurizer.get_descriptor_index(name)
+        return out
 
     def evaluate_single_mol(self, mol: Chem.Mol) -> tuple[torch.Tensor, torch.Tensor]:
         from rdkit.Chem.rdMolDescriptors import Properties
@@ -236,7 +240,11 @@ class RDKitDescriptorUpperBound(BasePropertyDef):
 
     @property
     def available_descriptors(self) -> dict[str, int]:
-        return {name: i + 1 for i, name in enumerate(self.get_featurizer().descriptor_names)}
+        out: dict[str, int] = {}
+        featurizer = self.get_featurizer()
+        for name in featurizer.get_descriptor_names():
+            out[name] = featurizer.get_descriptor_index(name)
+        return out
 
     def get_embedder(self, model_dim: int) -> ScalarPropertyUpperBoundEmbedder:
         return ScalarPropertyUpperBoundEmbedder(
