@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+import torch
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 from rdkit.Chem.AllChem import Compute2DCoords  # type: ignore[attr-defined]
@@ -78,6 +79,8 @@ def run_query(
 
 
 def save_results(df: pd.DataFrame, syn_list: Sequence[Synthesis], output_path: pathlib.Path) -> None:
+    PandasTools.molRepresentation = "svg"
+    PandasTools.RenderImagesInAllDataFrames()  # type: ignore[no-untyped-call]
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path.with_suffix(".syn.pkl"), "wb") as f:
         pickle.dump(syn_list, f)
@@ -89,9 +92,9 @@ def save_results(df: pd.DataFrame, syn_list: Sequence[Synthesis], output_path: p
 
 
 def top_p_score_diversity(df: pd.DataFrame, p: float) -> tuple[float, float]:
-    score_at_p = df["oracle"].quantile(p)
-    sub_df = df.loc[df["oracle"] >= score_at_p]
-    average_above = sub_df["oracle"].mean()
+    score_at_p = df["score"].quantile(p)
+    sub_df = df.loc[df["score"] >= score_at_p]
+    average_above = sub_df["score"].mean()
     diversity_above = diversity(sub_df["product"].tolist(), "ecfp4")
     return float(average_above), float(diversity_above)
 
@@ -123,6 +126,7 @@ def run_task(
             logger.info(f"Run {i} already exists, loading results")
             df = pd.read_pickle(result_path.with_suffix(".df.pkl"))
         else:
+            logger.info(f"Running query benchmark, run {i}")
             df, syn_list = run_query(
                 facade=facade,
                 model=model,
@@ -133,9 +137,9 @@ def run_task(
             save_results(df, syn_list, result_path)
 
         count_products.append(len(df))
-        avg_all.append(float(df["oracle"].mean()))
+        avg_all.append(float(df["score"].mean()))
 
-        avg_best.append(float(df["oracle"].max()))
+        avg_best.append(float(df["score"].max()))
         s_t1, d_t1 = top_p_score_diversity(df, 0.99)
         s_t5, d_t5 = top_p_score_diversity(df, 0.95)
         s_t10, d_t10 = top_p_score_diversity(df, 0.90)
@@ -147,7 +151,8 @@ def run_task(
         div_t10.append(d_t10)
 
     logger.info("==== Summary ====")
-    logger.info(f"Query: {query}, Scoring Function: {score_fn}")
+    logger.info(f"Query:   {query}")
+    logger.info(f"Scoring: {score_fn}")
     logger.info(f"- Runs: {n_runs}")
     logger.info(f"- Count products : {count_products}")
     logger.info(f"- Best: {np.mean(avg_best):.4f} ± {np.std(avg_best):.4f}")
@@ -161,10 +166,13 @@ def run_task(
 if __name__ == "__main__":
     facade, model = load_model("data/trained_models/v1_converted.ckpt")
     model = model.eval().to("cuda")
+    torch.set_grad_enabled(False)
 
     output_dir = pathlib.Path("./outputs/benchmarks/query")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger("query_benchmarks")
+    logger.propagate = False
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler(sys.stdout))
     logger.addHandler(logging.FileHandler(output_dir / "log.txt"))
