@@ -76,6 +76,7 @@ platforms = ["linux-64"]
 
 [tool.pixi.pypi-dependencies]
 prexsyn = { path = ".", editable = true }
+prexsyn-third_party = { path = "./third_party", editable = false }
 
 [tool.pixi.environments]
 default = { features = ["prod-engine"], solve-group = "default" }

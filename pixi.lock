@@ -225,6 +225,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/87/11/572c1913b5b92e4c519f735adfae572b46f2d79d99ede63eec0d6a272d6e/wandb-0.22.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/11/c9/cd8538dc2e7727095e0c1d867bad1e40c98f37763e6d995c1939f5fdc7b1/yarl-1.22.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: ./
+      - pypi: ./third_party
   dev:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -469,6 +470,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/87/11/572c1913b5b92e4c519f735adfae572b46f2d79d99ede63eec0d6a272d6e/wandb-0.22.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/11/c9/cd8538dc2e7727095e0c1d867bad1e40c98f37763e6d995c1939f5fdc7b1/yarl-1.22.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: ./
+      - pypi: ./third_party
   dev-engine:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -748,6 +750,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/87/11/572c1913b5b92e4c519f735adfae572b46f2d79d99ede63eec0d6a272d6e/wandb-0.22.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/11/c9/cd8538dc2e7727095e0c1d867bad1e40c98f37763e6d995c1939f5fdc7b1/yarl-1.22.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: ./
+      - pypi: ./third_party
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-4_kmp_llvm.conda
   build_number: 4
@@ -3499,7 +3502,7 @@ packages:
 - pypi: ./
   name: prexsyn
   version: 0.1.0
-  sha256: 08673124c0980e23c6b0ddc9358bff1420797ce557741c7a4de25edc8ba08c4f
+  sha256: 6b7ed0e29371270fbb2102ead33c706432583ec80c36709a6411bf708385a213
   requires_dist:
   - click>=8.3.0,<9
   - hydra-core>=1.3.2,<2
@@ -3519,6 +3522,10 @@ packages:
   - wandb>=0.22.2,<0.23
   requires_python: '>=3.11'
   editable: true
+- pypi: ./third_party
+  name: prexsyn-third-party
+  version: '0.1'
+  sha256: f3995cde81856d524b28c40e34dabde1e0957b74a543fc4816903d35e5803e90
 - pypi: https://files.pythonhosted.org/packages/f1/8b/544bc867e24e1bd48f3118cecd3b05c694e160a168478fa28770f22fd094/propcache-0.4.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
   name: propcache
   version: 0.4.1
