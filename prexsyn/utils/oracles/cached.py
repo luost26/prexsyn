@@ -44,9 +44,9 @@ class CachedOracle:
         return self._cache[mol_id]
 
     @overload
-    def __call__(self, mol: list[Chem.Mol]) -> list[float]: ...
-    @overload
     def __call__(self, mol: Chem.Mol) -> float: ...
+    @overload
+    def __call__(self, mol: list[Chem.Mol]) -> list[float]: ...
 
     def __call__(self, mol: list[Chem.Mol] | Chem.Mol) -> list[float] | float:
         if isinstance(mol, list):
