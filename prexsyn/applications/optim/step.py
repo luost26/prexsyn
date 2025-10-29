@@ -38,12 +38,14 @@ class FingerprintGenetic(StepStrategy):
         fingerprint_weight: float = 0.75,
         num_syns_per_query: int = 8,
         fp_type: str = "ecfp4",
+        flip_bit_ratio: float = 0.0,
     ) -> None:
         self.bottleneck_size = bottleneck_size
         self.bottleneck_temperature = bottleneck_temperature
         self.fingerprint_weight = fingerprint_weight
         self.num_syns_per_query = num_syns_per_query
         self.fp_type = fp_type
+        self.flip_bit_ratio = flip_bit_ratio
 
     @staticmethod
     def random_flip_bits(fp: torch.Tensor, flip_ratio: float) -> torch.Tensor:
@@ -66,15 +68,15 @@ class FingerprintGenetic(StepStrategy):
         fp = torch.bernoulli(bit_probs).to(fp_dtype)
         return fp
 
-    @staticmethod
-    def update_fp_bits_ga(coords: torch.Tensor) -> torch.Tensor:
+    def update_fp_bits_ga(self, coords: torch.Tensor) -> torch.Tensor:
         parent_1_index = torch.randint(0, coords.size(0), (coords.size(0),), device=coords.device)
         parent_2_index = torch.randint(0, coords.size(0), (coords.size(0),), device=coords.device)
         parent_1 = coords[parent_1_index]
         parent_2 = coords[parent_2_index]
         bit_prob = (0.5 * (parent_1 + parent_2)).clamp(0.0, 1.0)
         coords = torch.bernoulli(bit_prob).to(coords.dtype)
-        coords = FingerprintGenetic.random_flip_bits(coords, flip_ratio=0.1)
+        if self.flip_bit_ratio > 0:
+            coords = FingerprintGenetic.random_flip_bits(coords, flip_ratio=self.flip_bit_ratio)
         return coords
 
     @staticmethod
