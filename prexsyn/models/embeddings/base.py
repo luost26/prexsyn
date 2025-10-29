@@ -8,6 +8,9 @@ class Embedding:
     embedding: torch.Tensor
     padding_mask: torch.Tensor
 
+    def __getitem__(self, s: slice) -> "Embedding":
+        return Embedding(self.embedding[s], self.padding_mask[s])
+
     def pad(self, target_length: int) -> "Embedding":
         if self.sequence_length >= target_length:
             return self
