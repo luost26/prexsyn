@@ -1,3 +1,4 @@
+import datetime
 import logging
 import pathlib
 import sys
@@ -21,6 +22,7 @@ class ExampleOracle(CustomOracle):
 
     def evaluate_many(self, mols: list[Chem.Mol]) -> list[float]:
         # Custom batch evaluation logic can be implemented here
+        # If not implemented, it will default to calling evaluate() for each molecule
         return super().evaluate_many(mols)
 
 
@@ -51,6 +53,7 @@ def main(
     torch.set_grad_enabled(False)
     facade, model = load_model(model_path, train=False)
     model = model.to("cuda")
+    output_dir = output_dir / datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir.mkdir(parents=True, exist_ok=False)
 
     logger = logging.getLogger("optim")
@@ -59,14 +62,12 @@ def main(
     logger.addHandler(logging.StreamHandler(sys.stdout))
     logger.addHandler(logging.FileHandler(output_dir / "log.txt"))
 
-    max_evals = 50_000
-
     optimizer = Optimizer(
         facade=facade,
         model=model,
         init_query=init_query_lipinski(facade.property_set),
         num_init_samples=1000,
-        max_evals=max_evals,
+        max_evals=50_000,
         step_strategy=FingerprintGenetic(
             bottleneck_size=50,
             bottleneck_temperature=0.5,
@@ -75,14 +76,15 @@ def main(
         constraint_fn=None,
         cond_query=None,
         time_limit=None,
+        handle_interrupt=True,
     )
     tracker = optimizer.run()
     df_result = tracker.get_dataframe()
-    auc_top10 = tracker.auc_top10(max_evals)
+    auc_top10 = tracker.auc_top10(optimizer.max_evals)
     df_result.to_pickle(output_dir / "result.pkl")
 
     logger.info("==== Summary ====")
-    logger.info(f"- AUC-Top10({max_evals / 1000}k): {auc_top10:.4f}, Evals: {len(df_result)}")
+    logger.info(f"- AUC-Top10({optimizer.max_evals / 1000}k): {auc_top10:.4f}, Evals: {len(df_result)}")
     logger.info(f"Results saved to: {output_dir / 'result.pkl'}")
 
 
