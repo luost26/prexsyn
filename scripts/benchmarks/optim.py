@@ -7,6 +7,7 @@ import click
 import numpy as np
 import pandas as pd
 import torch
+from rdkit import Chem
 
 from prexsyn.applications.optim import Optimizer
 from prexsyn.applications.optim.step import FingerprintGenetic, StepStrategy
@@ -27,6 +28,13 @@ def query_lipinski(ps: PropertySet, pn: str = "rdkit_descriptor_upper_bound") ->
         & p.lt("NumRotatableBonds", 9)
         & p.lt("tpsa", 140.0)
     )
+
+
+def query_scaffold_hop_demo1_condition(ps: PropertySet, pn: str = "brics") -> Query:
+    deco1 = Chem.MolFromSmiles("[16*]c1ccc2ncsc2c1")
+    deco2 = Chem.MolFromSmiles("CCCO[15*]")
+    p = ps[pn]
+    return p.has(deco1, deco2)
 
 
 def auc_top10_from_df(df: pd.DataFrame, max_evals: int) -> float:
@@ -150,6 +158,13 @@ def main(
         Task("sitagliptin"),
         Task("zaleplon"),
         Task("celecoxib_rediscovery"),
+        Task("scaffold_hop_demo1_baseline", oracle_name="scaffold_hop_demo1", max_evals=5000),
+        Task(
+            "scaffold_hop_demo1_conditioned",
+            oracle_name="scaffold_hop_demo1",
+            cond_query=query_scaffold_hop_demo1_condition(facade.property_set),
+            max_evals=5000,
+        ),
     ]
 
     if selected_tasks:
