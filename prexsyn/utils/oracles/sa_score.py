@@ -181,7 +181,7 @@ def download(local: str | pathlib.Path) -> None:
     total_size = int(response.headers.get("content-length", 0))
     block_size = 1024
 
-    print("Downloading sEH proxy model...")
+    print("Downloading SA score model...")
     with tqdm(total=total_size, unit="B", unit_scale=True, desc="Downloading") as pbar:
         with open(local, "wb") as file:
             for data in response.iter_content(block_size):
