@@ -1,0 +1,37 @@
+chemical_space:
+  building_block_path: data/building_blocks/Enamine_Rush-Delivery_Building_Blocks-US_223244cmpd_20231001.sdf
+  reaction_path: data/reactions/rxn115.txt
+  cache_dir: data/chemical_spaces/enamine_rxn115
+property:
+- class: prexsyn.properties.fingerprint.ECFP4
+  params:
+    name: ecfp4
+- class: prexsyn.properties.fingerprint.FCFP4
+  params:
+    name: fcfp4
+- class: prexsyn.properties.rdkit_descriptors.RDKitDescriptors
+  params:
+    name: rdkit_descriptors
+    num_evaluated_descriptors: 4
+- class: prexsyn.properties.rdkit_descriptors.RDKitDescriptorUpperBound
+  params:
+    name: rdkit_descriptor_upper_bound
+- class: prexsyn.properties.brics.BRICSFragments
+  params:
+    name: brics
+    max_num_fragments: 8
+model:
+  dim: 1024
+  nhead: 16
+  dim_feedforward: 2048
+  num_layers: 12
+  bb_embed_dim: 1024
+tokenization: {}
+data:
+  batch_size: 1024
+  num_threads: 30
+  virtual_length: 2000
+  val_properties:
+  - ecfp4
+  num_val_batches: 10
+  val_base_seed: 2025
