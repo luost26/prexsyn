@@ -49,6 +49,7 @@ def draw_synthesis(
     s: Synthesis,
     node_image_size: int = 200,
     show_intermediate: bool = False,
+    show_num_cases: bool = False,
     product: Mol | None = None,
     rankdir: str = "LR",
     fontname: str = "Fira Sans",
@@ -68,7 +69,7 @@ def draw_synthesis(
                 ('<TR><TD><IMG SRC="' + im_path + '"/></TD></TR>' if mol is not None else ""),
             ]
             for k, v in annots.items():
-                if v != "":
+                if v != "" and v is not None:
                     label_lines.append(f"<TR><TD>{k}: {v}</TD></TR>" if k else f"<TR><TD>{v}</TD></TR>")
             label_lines += ["</TABLE>", ">"]
 
@@ -99,7 +100,7 @@ def draw_synthesis(
                         node_name,
                         item,
                         {
-                            **({"Step": i} if show_step else {}),
+                            "Step": i if show_step else None,
                             **_get_annots(
                                 item,
                                 {"": "building_block_index", "Name": "name"},
@@ -122,12 +123,12 @@ def draw_synthesis(
                         node_name,
                         prod,
                         {
-                            **({"Step": i} if show_step else {}),
+                            "Step": i if show_step else None,
                             **_get_annots(
                                 item,
                                 {"Reaction": "reaction_index", "Name": "name"},
                             ),
-                            "#Cases": len(replay.top()),
+                            "#Cases": len(replay.top()) if show_num_cases else None,
                         },
                     )
                 )
