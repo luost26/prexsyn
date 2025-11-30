@@ -62,16 +62,18 @@ disallow_subclassing_any = false
 
 [dependency-groups]
 dev = [
-    "black>=25.9.0",
-    "flake8>=7.3.0",
-    "isort>=6.1.0",
-    "mypy>=1.18.2",
-    "pre-commit>=4.3.0",
-    "pytest>=8.4.2",
+    "black",
+    "flake8",
+    "isort",
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "ipykernel",
+    "ipywidgets",
 ]
 
 [tool.pixi.workspace]
-channels = ["conda-forge"]
+channels = ["conda-forge", "luost26"]
 platforms = ["linux-64"]
 
 [tool.pixi.pypi-dependencies]
@@ -93,25 +95,24 @@ rdkit = ">=2025.3.6"
 graphviz = ">=13"
 
 [tool.pixi.feature.prod-engine.dependencies]
-# Placeholder for prexsyn-engine conda package
+prexsyn-engine = { version = ">=0.1.0" , channel = "luost26" }
 
 [tool.pixi.feature.dev-engine.dependencies]
-librdkit-dev = ">=2025.3.6"
-libboost-python-devel = ">=1.86.0,<2"
 cmake = ">=4.1.1,<5"
 ninja = ">=1.13.1,<2"
-clang = "==21.1.0"
+
 clangxx = "==21.1.0"
-llvm-openmp = "==21.1.0"
-eigen = ">=3.4.0,<4"
-libboost-devel = ">=1.86.0,<2"
-spdlog = ">=1.15.3,<2"
 clang-tools = "==21.1.0"
 llvm-tools = "==21.1.0"
 compiler-rt = "==21.1.0"
+llvm-openmp = "*"
+
+librdkit-dev = ">=2025.3.6"
+libboost-devel = ">=1.86.0,<2"
+libboost-python-devel = ">=1.86.0,<2"
+eigen = ">=3.4.0,<4"
+spdlog = ">=1.15.3,<2"
 gtest = ">=1.14.0,<2"
-ipykernel = "*"
-ipywidgets = "*"
 
 [tool.pixi.feature.dev-engine.tasks]
 install-engine = { cmd = "pip install ../prexsyn-engine" }
