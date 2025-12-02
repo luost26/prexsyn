@@ -10,7 +10,9 @@ theme:
     - toc.follow
     - content.code.copy
 markdown_extensions:
+  - pymdownx.blocks.caption
   - attr_list
+  - footnotes
 plugins:
   - search
   - awesome-nav

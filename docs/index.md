@@ -1,17 +1,56 @@
 # PrexSyn
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Introduction
 
-## Commands
+PrexSyn is an efficient, accurate, and programmable model for synthesizable molecular design.
+It is based on a decoder-only transformer architecture that autoregressively generates *postfix notations of
+synthesis*[^postfix] (a molecular representation based on chemical reactions and purchasable building blocks) conditioned on molecular properties.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+[^postfix]: Projecting Molecules into Synthesizable Chemical Spaces. [https://arxiv.org/abs/2406.04628](https://arxiv.org/abs/2406.04628)
 
-## Project layout
+We trained PrexSyn on a billion-scale datastream of postfix notations paired with molecular properties using only two GPUs and 32 CPU cores in two days. This is made possible by [PrexSyn Engine](https://github.com/luost26/prexsyn-engine), a real-time, high-throughput C++-based data generation pipeline.
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+
+## Capabilities
+
+### Chemical Space Projection
+
+Chemical space projection refers to finding synthesizable molecules similar to a given target molecule in the predefined chemical space.
+
+![Chemical Space Projection](imgs/projection-1.png){: width="300" }
+/// caption
+///
+
+PrexSyn can project molecules into synthesizable chemical spaces much more efficiently and accurately than prior methods.
+
+![Performance comparison](imgs/projection-compare.png){: width="500" }
+/// caption
+///
+
+We provide a quick demo of chemical space projection using PrexSyn. You can find the instructions [here](getting-started/examples.md).
+
+### Molecular Sampling
+
+![Molecular Sampling](imgs/sampling-1.png){: width="300" }
+/// caption
+///
+
+## Resources
+
+### Repositories
+
+- **PrexSyn**: [https://github.com/luost26/prexsyn](https://github.com/luost26/prexsyn)
+- **PrexSyn Engine**: The C++ backend that provides a high-throughput training data pipeline and a fast synthesis detokenizer. [https://github.com/luost26/prexsyn-engine](https://github.com/luost26/prexsyn-engine)
+- **Hugging Face Repository**: Preprocessed chemical space data and trained model weights. [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
+
+### Papers and Documentation
+
+- **PrexSyn Paper**: Efficient and Programmable Exploration of Synthesizable Chemical Space. [https://arxiv.org/abs/2512.00384](https://arxiv.org/abs/2512.00384)
+- **PrexSyn Documentation**: [https://prexsyn.readthedocs.io](https://prexsyn.readthedocs.io)
+- **ChemProjector Paper**: Projecting Molecules into Synthesizable Chemical Spaces. [https://arxiv.org/abs/2406.04628](https://arxiv.org/abs/2406.04628)
+- **SynFormer Paper**: Generative Artificial Intelligence for Navigating Synthesizable Chemical Space. [https://arxiv.org/abs/2410.03494](https://arxiv.org/abs/2410.03494)
+- **SynNet Paper**: Amortized Tree Generation for Bottom-up Synthesis Planning and Synthesizable Molecular Design. [https://arxiv.org/abs/2110.06389](https://arxiv.org/abs/2110.06389)
+
+### Miscellaneous
+
+- **MIT Coley Research Group**: [https://coley.mit.edu/](https://coley.mit.edu/)
