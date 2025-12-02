@@ -1,6 +1,6 @@
 # Data and Weights
 
-## Automatic download
+## Automatic Download
 
 PrexSyn can automatically download the preprocessed chemical space data and trained model weights upon first use.
 
@@ -46,8 +46,8 @@ Results:
 ```
 
 
-## Manual download
+## Manual Download
 
 Our preprocessed chemical space data and trained model weights are hosted on Hugging Face: [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main).
 
-You can download them manually and place them in the [`data/`](https://github.com/luost26/PrexSyn/tree/main/data) directory of the PrexSyn project.
+You can download them manually and place them in the [`data/`](https://github.com/luost26/PrexSyn/tree/main/data) directory of the project.

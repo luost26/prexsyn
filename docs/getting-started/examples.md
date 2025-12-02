@@ -2,6 +2,9 @@
 
 ## Chemical Space Projection
 
+An example script for chemical space projection is available at [`scripts/examples/projection.py`](https://github.com/luost26/PrexSyn/blob/main/scripts/examples/projection.py).
+This script takes a SMILES string as input and generates synthesizable analogs. Top 10 results are displayed in YAML format, and optionally the synthesis pathways can be visualized as images.
+
 ```bash
 python scripts/examples/projection.py --smiles "COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1"
 ```
@@ -48,7 +51,7 @@ This will save the synthesis pathway diagrams in the `./draw` directory.
 
 ## Molecular Sampling
 
-We provide an example script for molecular sampling at [`scripts/examples/optim.py`](https://github.com/luost26/PrexSyn/blob/main/scripts/examples/optim.py). The oracle function in this example is the QED[^qed] (Quantitative Estimate of Drug-likeness) score from RDKit[^rdkit-qed]. You can implement your own oracle function as needed.
+An example script for molecular sampling is available at [`scripts/examples/optim.py`](https://github.com/luost26/PrexSyn/blob/main/scripts/examples/optim.py). The oracle function in this example is the QED[^qed] (Quantitative Estimate of Drug-likeness) score from RDKit[^rdkit-qed]. You can implement your own oracle function as needed.
 
 To run the example, use the following command:
 

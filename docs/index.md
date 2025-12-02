@@ -2,7 +2,7 @@
 
 ## Introduction
 
-PrexSyn is an efficient, accurate, and programmable model for synthesizable molecular design.
+PrexSyn is an efficient, accurate, and programmable framework for synthesizable molecular design.
 It is based on a decoder-only transformer architecture that autoregressively generates *postfix notations of
 synthesis*[^postfix] (a molecular representation based on chemical reactions and purchasable building blocks) conditioned on molecular properties.
 
@@ -41,7 +41,7 @@ We provide a quick demo of chemical space projection using PrexSyn. You can find
 
 ### Repositories
 
-- **PrexSyn**: [https://github.com/luost26/prexsyn](https://github.com/luost26/prexsyn)
+- **PrexSyn**: [https://github.com/luost26/PrexSyn](https://github.com/luost26/PrexSyn)
 - **PrexSyn Engine**: The C++ backend that provides a high-throughput training data pipeline and a fast synthesis detokenizer. [https://github.com/luost26/prexsyn-engine](https://github.com/luost26/prexsyn-engine)
 - **Hugging Face Repository**: Preprocessed chemical space data and trained model weights. [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 

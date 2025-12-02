@@ -4,7 +4,7 @@
 [![readthedocs](https://app.readthedocs.org/projects/prexsyn/badge/?version=latest)](https://prexsyn.readthedocs.io)
 [![data](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Data-blue)](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 
-Work in progress...
+PrexSyn is an efficient, accurate, and programmable framework for exploring synthesizable chemical space. Please refer to our [paper](https://arxiv.org/abs/2512.00384) for more details.
 
 ## Usage
 
