@@ -39,6 +39,28 @@ conda install luost26::prexsyn-engine
 
 Setup PrexSyn package. PyTorch and other dependencies will be installed in this step.
 
+If you want to reproduce the results in the paper, please use the `eval` extra to install additional dependencies for GuacaMol, sEH proxy, and docking:
+
+```bash
+pip install -e .[eval]
+```
+
+If you want to just install the base package without any extra dependencies, run:
+
 ```bash
 pip install -e .
 ```
+
+If you want to install development tools as well, please use the `dev` extra:
+
+```bash
+pip install -e .[dev]
+```
+
+Below is a summary of the available extras:
+
+
+| Extra  | Description                                                  |
+| ------ | ------------------------------------------------------------ |
+| `eval` | Dependencies for running GuacaMol, sEH, and docking molecular sampling benchmarks. |
+| `dev`  | Development tools including linters, pytest, jupyter, and mkdocs. |

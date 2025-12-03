@@ -136,7 +136,7 @@ class autodock_gpu:
         if not pdbqt_path.exists() or not gpf_path.exists():
             command: list[str] = [
                 "mk_prepare_receptor.py",
-                "-i",
+                "--read_pdb",
                 self.receptor_path.name,
                 "-o",
                 self.receptor_prefix.name,

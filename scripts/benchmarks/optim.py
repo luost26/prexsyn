@@ -63,7 +63,7 @@ class sEHEvaluator:
         df["sa"] = df["product"].map(get_oracle("sa_score", normalized=False))
         return df
 
-    def __call__(self, df_list: list[pd.DataFrame]) -> None:
+    def __call__(self, df_list: list[pd.DataFrame], logger: logging.Logger) -> None:
         statistics: dict[str, list[float]] = {}
         for df in df_list:
             df_top = self.calc_qed_sa(df.nlargest(1000, "score").copy())
@@ -71,9 +71,9 @@ class sEHEvaluator:
             statistics.setdefault("top1k_sa", []).append(float(df_top["sa"].mean()))
             statistics.setdefault("top1k_qed", []).append(float(df_top["qed"].mean()))
 
-        print("sEH Proxy Task Statistics over Top 1000 Molecules:")
+        logger.info("sEH Proxy Task Statistics over Top 1000 Molecules:")
         for key, values in statistics.items():
-            print(f"- {key}: {np.mean(values):.4f} ± {np.std(values):.4f}")
+            logger.info(f"- {key}: {np.mean(values):.4f} ± {np.std(values):.4f}")
 
 
 class Task:
@@ -89,7 +89,7 @@ class Task:
         step_strategy: StepStrategy | None = None,
         bottleneck_size: int = 50,
         bottleneck_temperature: float = 0.5,
-        post_fn: Callable[[list[pd.DataFrame]], None] = lambda _: None,
+        post_fn: Callable[[list[pd.DataFrame], logging.Logger], None] = lambda _, __: None,
     ) -> None:
         super().__init__()
         self.name = name
@@ -157,7 +157,7 @@ class Task:
         logger.info(f"Oracle: {self.name}")
         logger.info(f"- Runs: {len(auc_top10_all)}")
         logger.info(f"- AUC-Top10: {np.mean(auc_top10_all):.3f} ± {np.std(auc_top10_all):.3f}")
-        self.post_fn(df_result_all)
+        self.post_fn(df_result_all, logger)
 
 
 @click.command()
@@ -215,26 +215,26 @@ def main(
                     max_evals=5000,
                 )
             )
-    if has_oracle("sEH_proxy"):
-        tasks.append(
-            Task(
-                "sEH_proxy",
-                max_evals=10_000,
-                bottleneck_temperature=5.0,
-                constraint_name="qed+sa_score",
-                num_init_samples=1000,
-                bottleneck_size=100,
-                post_fn=sEHEvaluator(),
+        if "sEH_proxy" in selected_tasks and has_oracle("sEH_proxy"):
+            tasks.append(
+                Task(
+                    "sEH_proxy",
+                    max_evals=10_000,
+                    bottleneck_temperature=5.0,
+                    constraint_name="qed+sa_score",
+                    num_init_samples=1000,
+                    bottleneck_size=100,
+                    post_fn=sEHEvaluator(),
+                )
             )
-        )
-    if has_oracle("autodock_Mpro_7gaw"):
-        tasks.append(
-            Task(
-                "autodock_Mpro_7gaw",
-                max_evals=2000,
-                constraint_name="2*qed+2*sa_score+5*lipinski_product",
+        if "autodock_Mpro_7gaw" in selected_tasks and has_oracle("autodock_Mpro_7gaw"):
+            tasks.append(
+                Task(
+                    "autodock_Mpro_7gaw",
+                    max_evals=2000,
+                    constraint_name="2*qed+2*sa_score+5*lipinski_product",
+                )
             )
-        )
 
     if selected_tasks:
         tasks = [task for task in tasks if task.name in selected_tasks]

@@ -1,12 +1,22 @@
 # Molecular Sampling
 
-## GuacaMol Benchmark
+## Prerequisite
 
-Install the [GuacaMol package](https://github.com/luost26/PrexSyn/tree/main/third_party) shipped with the PrexSyn repository:
+Oracle functions used in the benchmarks require additional dependencies (GuacaMol, PyTorch Geometric, etc.). Please follow the instructions below to make sure these dependencies are installed properly.
+
+If you are using Pixi, make sure to activate the `dev` environment:
 
 ```bash
-pip install ./third_party
+pixi shell -e dev
 ```
+
+If you installed the environment manually using conda/mamba and pypi, make sure you have the `eval` extra dependencies installed ([refer to the installation instructions](../getting-started/installation.md#condamamba-pypi)).
+
+```bash
+pip install -e .[eval]
+```
+
+## GuacaMol Benchmark
 
 To reproduce the results in Table 2 of [the PrexSyn paper](https://arxiv.org/abs/2512.00384), run the following benchmark script:
 
@@ -29,4 +39,10 @@ Results will be saved in the `outputs/benchmarks/optim` directory. For example, 
 Oracle: amlodipine
 - Runs: 5
 - AUC-Top10: 0.781 ± 0.023
+```
+
+## sEH Proxy
+
+```
+pixi run -e dev python scripts/benchmarks/optim.py -t sEH_proxy
 ```
