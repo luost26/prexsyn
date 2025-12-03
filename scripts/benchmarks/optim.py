@@ -2,6 +2,7 @@ import heapq
 import logging
 import pathlib
 import sys
+from collections.abc import Callable
 from typing import cast
 
 import click
@@ -56,6 +57,25 @@ def auc_top10_from_df(df: pd.DataFrame, max_evals: int) -> float:
     return float(np.mean(moving_top10_avg[:max_evals]))
 
 
+class sEHEvaluator:
+    def calc_qed_sa(self, df: pd.DataFrame) -> pd.DataFrame:
+        df["qed"] = df["product"].map(get_oracle("qed"))
+        df["sa"] = df["product"].map(get_oracle("sa_score", normalized=False))
+        return df
+
+    def __call__(self, df_list: list[pd.DataFrame]) -> None:
+        statistics: dict[str, list[float]] = {}
+        for df in df_list:
+            df_top = self.calc_qed_sa(df.nlargest(1000, "score").copy())
+            statistics.setdefault("top1k_score", []).append(float(df_top["score"].mean()))
+            statistics.setdefault("top1k_sa", []).append(float(df_top["sa"].mean()))
+            statistics.setdefault("top1k_qed", []).append(float(df_top["qed"].mean()))
+
+        print("sEH Proxy Task Statistics over Top 1000 Molecules:")
+        for key, values in statistics.items():
+            print(f"- {key}: {np.mean(values):.4f} ± {np.std(values):.4f}")
+
+
 class Task:
     def __init__(
         self,
@@ -69,6 +89,7 @@ class Task:
         step_strategy: StepStrategy | None = None,
         bottleneck_size: int = 50,
         bottleneck_temperature: float = 0.5,
+        post_fn: Callable[[list[pd.DataFrame]], None] = lambda _: None,
     ) -> None:
         super().__init__()
         self.name = name
@@ -82,8 +103,15 @@ class Task:
             bottleneck_size=bottleneck_size,
             bottleneck_temperature=bottleneck_temperature,
         )
+        self.post_fn = post_fn
 
-    def run(self, facade: Facade, model: PrexSyn, out_root: pathlib.Path, time_limit: int | None = None) -> None:
+    def run(
+        self,
+        facade: Facade,
+        model: PrexSyn,
+        out_root: pathlib.Path,
+        time_limit: int | None = None,
+    ) -> None:
         task_dir = out_root / self.name
         task_dir.mkdir(parents=True, exist_ok=True)
 
@@ -94,6 +122,7 @@ class Task:
         logger.addHandler(logging.FileHandler(task_dir / "log.txt"))
 
         auc_top10_all = []
+        df_result_all: list[pd.DataFrame] = []
         for run_id in range(1, self.num_runs + 1):
             logger.info(f"Running task: {task_dir.name}, run {run_id}/5")
             result_path = task_dir / f"run_{run_id:02d}.df.pkl"
@@ -101,6 +130,7 @@ class Task:
                 logger.info(f"Skipping existing run: {result_path}")
                 df_result = cast(pd.DataFrame, pd.read_pickle(result_path))
                 auc_top10 = auc_top10_from_df(df_result, self.max_evals)
+                df_result_all.append(df_result)
             else:
                 optimizer = Optimizer(
                     facade=facade,
@@ -118,6 +148,7 @@ class Task:
                 df_result = tracker.get_dataframe()
                 auc_top10 = tracker.auc_top10(self.max_evals)
                 df_result.to_pickle(result_path)
+                df_result_all.append(df_result)
 
             auc_top10_all.append(auc_top10)
             logger.info(
@@ -130,6 +161,7 @@ class Task:
         logger.info(f"Oracle: {self.name}")
         logger.info(f"- Runs: {len(auc_top10_all)}")
         logger.info(f"- AUC-Top10: {np.mean(auc_top10_all):.3f} ± {np.std(auc_top10_all):.3f}")
+        self.post_fn(df_result_all)
 
 
 @click.command()
@@ -139,7 +171,12 @@ class Task:
     type=click.Path(exists=True, path_type=pathlib.Path),
     default="./data/trained_models/v1_converted.yaml",
 )
-@click.option("--out", "output_dir", type=click.Path(path_type=pathlib.Path), default="./outputs/benchmarks/optim")
+@click.option(
+    "--out",
+    "output_dir",
+    type=click.Path(path_type=pathlib.Path),
+    default="./outputs/benchmarks/optim",
+)
 @click.option("--time-limit", type=int, default=None)
 @click.option("selected_tasks", "--task", "-t", multiple=True, default=None)
 def main(
@@ -162,15 +199,26 @@ def main(
         Task("sitagliptin"),
         Task("zaleplon"),
         Task("celecoxib_rediscovery"),
-        Task("scaffold_hop_demo1_baseline", oracle_name="scaffold_hop_demo1", max_evals=5000),
-        Task(
-            "scaffold_hop_demo1_conditioned",
-            oracle_name="scaffold_hop_demo1",
-            cond_query=query_scaffold_hop_demo1_condition(facade.property_set),
-            max_evals=5000,
-        ),
     ]
 
+    if selected_tasks is not None:
+        if "scaffold_hop_demo1_baseline" in selected_tasks:
+            tasks.append(
+                Task(
+                    "scaffold_hop_demo1_baseline",
+                    oracle_name="scaffold_hop_demo1",
+                    max_evals=5000,
+                )
+            )
+        if "scaffold_hop_demo1_conditioned" in selected_tasks:
+            tasks.append(
+                Task(
+                    "scaffold_hop_demo1_conditioned",
+                    oracle_name="scaffold_hop_demo1",
+                    cond_query=query_scaffold_hop_demo1_condition(facade.property_set),
+                    max_evals=5000,
+                )
+            )
     if has_oracle("sEH_proxy"):
         tasks.append(
             Task(
@@ -180,6 +228,7 @@ def main(
                 constraint_name="qed+sa_score",
                 num_init_samples=1000,
                 bottleneck_size=100,
+                post_fn=sEHEvaluator(),
             )
         )
     if has_oracle("autodock_Mpro_7gaw"):
