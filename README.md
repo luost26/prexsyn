@@ -12,6 +12,13 @@ PrexSyn is an efficient, accurate, and programmable framework for exploring synt
 
 Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
 
+## Links
+
+- [Documentation](https://prexsyn.readthedocs.io)
+- [Paper](https://arxiv.org/abs/2512.00384)
+- [Data and Weights](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
+- [PrexSyn Engine](https://github.com/luost26/prexsyn-engine)
+
 ## Citation
 
 ```bibtex
