@@ -1,5 +1,5 @@
 site_name: PrexSyn Documentation
-repo_url: https://github.com/luost26/prexsyn
+repo_url: https://github.com/luost26/PrexSyn
 theme:
   name: material
   features:
