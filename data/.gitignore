@@ -8,3 +8,5 @@
 !chemical_spaces/.gitkeep
 !trained_models
 !trained_models/*.yaml
+!benchmarks
+!benchmarks/*
