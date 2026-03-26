@@ -94,7 +94,7 @@ pip = "*"
 setuptools = "*"
 rdkit = ">=2025.3.6"
 graphviz = ">=13"
-prexsyn-engine = ">=0.1.1.dev5"
+prexsyn-engine = ">=0.1.1.dev5,<1.0"
 
 [tool.pixi.feature.dev-engine.dependencies]
 cmake = ">=4.1.1,<5"
