@@ -8,6 +8,12 @@
 
 PrexSyn is an efficient, accurate, and programmable framework for exploring synthesizable chemical space. Please refer to our [paper](https://arxiv.org/abs/2512.00384) for more details.
 
+## 🚧 Refactoring PrexSyn
+
+We have refactored [PrexSyn Engine](https://github.com/luost26/prexsyn-engine) to enhance its stability and usability.
+
+Now, we are in the process of refactoring the main PrexSyn codebase. This effort focuses on (1) integrating the new PrexSyn Engine to improve stability and usability, (2) providing a more robust and user-friendly interface for molecular sampling with arbitrary user-defined objective functions, and (3) enabling customization of user-defined chemical spaces.
+
 ## Usage
 
 Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
