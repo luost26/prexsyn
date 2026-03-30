@@ -1,1 +1,0 @@
-from .struct import SynthesisTrainingBatch as SynthesisTrainingBatch
