@@ -40,11 +40,25 @@ class ModelConfig:
 
 
 @dataclass
+class DataPipelineConfig:
+    heavy_atom_limit: int | None = None
+    max_building_blocks: int | None = None
+    max_outcomes_per_reaction: int | None = None
+    selectivity_cutoff: int | None = None
+
+
+@dataclass
+class TrainingConfig:
+    batch_size: int
+
+
+@dataclass
 class Config:
     chemical_space: ChemicalSpaceConfig
     descriptors: Mapping[str, DescriptorConfig]
     featurizer: FeaturizerConfig
     model: ModelConfig
+    training: TrainingConfig
 
     @staticmethod
     def from_yaml(path: Path):

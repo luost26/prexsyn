@@ -3,7 +3,7 @@ from prexsyn.utils.download import download
 from prexsyn.models.prexsyn import PrexSyn
 from prexsyn.models.embeddings import DescriptorEmbedderConfig
 from .descriptor_registry import get_descriptor_constructor
-from .config import FeaturizerConfig, ChemicalSpaceConfig, DescriptorConfig, Config
+from .config import FeaturizerConfig, ChemicalSpaceConfig, DescriptorConfig, Config, DataPipelineConfig
 
 
 def download_chemical_space_if_needed(cs_conf: ChemicalSpaceConfig):
@@ -51,8 +51,22 @@ def get_descriptor_embedder_config(desc_conf: DescriptorConfig) -> DescriptorEmb
     }
 
 
-def get_data_pipeline(conf: Config):
-    chemspace = get_chemical_space(conf.chemical_space)
+def get_enumerator_config(dp_conf: DataPipelineConfig):
+    conf = prexsyn_engine.enumerator.EnumeratorConfig()
+    if dp_conf.heavy_atom_limit is not None:
+        conf.heavy_atom_limit = dp_conf.heavy_atom_limit
+    if dp_conf.max_building_blocks is not None:
+        conf.max_building_blocks = dp_conf.max_building_blocks
+    if dp_conf.selectivity_cutoff is not None:
+        conf.selectivity_cutoff = dp_conf.selectivity_cutoff
+    if dp_conf.max_outcomes_per_reaction is not None:
+        conf.max_outcomes_per_reaction = dp_conf.max_outcomes_per_reaction
+    return conf
+
+
+def get_data_pipeline(conf: Config, chemspace: prexsyn_engine.chemspace.ChemicalSpace | None = None):
+    if chemspace is None:
+        chemspace = get_chemical_space(conf.chemical_space)
 
     mol_descs = {name: get_descriptor_function(desc_conf) for name, desc_conf in conf.descriptors.items()}
     token_def = get_token_def(conf.featurizer)
@@ -96,4 +110,18 @@ def get_model(conf: Config):
         start_token=token_def.start,
         bb_token=token_def.bb,
         rxn_token=token_def.rxn,
+    )
+
+
+def get_detokenizer(
+    conf: Config,
+    max_outcomes_per_reaction: int = 8,
+    chemspace: prexsyn_engine.chemspace.ChemicalSpace | None = None,
+):
+    if chemspace is None:
+        chemspace = get_chemical_space(conf.chemical_space)
+    return prexsyn_engine.detokenizer.MultiThreadedDetokenizer(
+        chemical_space=chemspace,
+        token_def=get_token_def(conf.featurizer),
+        max_outcomes_per_reaction=max_outcomes_per_reaction,
     )
