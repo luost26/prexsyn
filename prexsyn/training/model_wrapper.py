@@ -1,10 +1,16 @@
 from typing import cast
 
-import torch
 import lightning as L
+import numpy as np
+import torch
+from lightning.pytorch.loggers import WandbLogger
 from omegaconf import DictConfig
 
-from prexsyn.factory import Config, get_chemical_space, get_model, get_detokenizer
+from prexsyn.factory import Config, get_chemical_space, get_descriptor_constructor, get_detokenizer, get_model
+from prexsyn.samplers.basic import BasicSampler
+from prexsyn.utils.draw import SynthesisDrawer, make_grid
+from prexsyn.utils.metrics import tanimoto_similarity
+
 from .data_module import SynthesisBatch
 
 
@@ -41,6 +47,12 @@ class PrexSynWrapper(L.LightningModule):
             self._detokenizer = get_detokenizer(self.config, chemspace=self.chemical_space)
         return self._detokenizer
 
+    @property
+    def fingerprint_function(self):
+        if not hasattr(self, "_fingerprint_function"):
+            self._fingerprint_function = get_descriptor_constructor("ecfp4")()
+        return self._fingerprint_function
+
     def configure_optimizers(self):
         optimizers = [torch.optim.AdamW(self.parameters(), lr=self.config.training.optimizer["lr"])]
         schedulers: list[torch.optim.lr_scheduler.LRScheduler] = []
@@ -66,5 +78,50 @@ class PrexSynWrapper(L.LightningModule):
         self.log("train/loss", loss, on_step=True, prog_bar=True, logger=True)
         for k, v in loss_dict.items():
             self.log(f"train/loss_{k}", v, on_step=True, prog_bar=False, logger=True)
+
+        return loss
+
+    def validation_step(self, batch: SynthesisBatch, batch_idx: int) -> torch.Tensor:
+        token_types, bb_indices, rxn_indices = batch["synthesis"].unbind(-1)
+        loss_dict = self.model(
+            descriptors=batch["descriptors"],
+            token_types=token_types,
+            bb_indices=bb_indices,
+            rxn_indices=rxn_indices,
+        )
+        loss = sum_weighted_losses(loss_dict, self.config.training.loss_weights)
+        self.log("val/loss", loss, on_step=False, prog_bar=True, logger=True)
+        for k, v in loss_dict.items():
+            self.log(f"val/loss_{k}", v, on_step=False, prog_bar=False, logger=True)
+
+        sampler = BasicSampler(self.model, num_samples=1)
+        syn_pred_list = sampler.sample(batch["descriptors"]).detokenize(self.detokenizer)
+        syn_true_list = self.detokenizer(batch["synthesis"].cpu().numpy())
+        sim_list: list[float] = []
+        count_success = 0
+        for syn_true, syn_pred in zip(syn_true_list, syn_pred_list):
+            if syn_pred.synthesis().stack_size() != 1:
+                sim_list.append(0.0)
+                continue
+
+            prod_pred = syn_pred.products()[0]
+            prod_true = syn_true.products()[0]
+            fp_pred = self.fingerprint_function(prod_pred)
+            fp_true = self.fingerprint_function(prod_true)
+            sim_list.append(float(tanimoto_similarity(fp_true, fp_pred)))
+            count_success += 1
+        self.log("val/similarity", float(np.mean(sim_list)), on_step=False, prog_bar=True, logger=True)
+        self.log("val/success_rate", count_success / len(syn_pred_list), on_step=False, prog_bar=False, logger=True)
+
+        if batch_idx == 0 and isinstance(self.logger, WandbLogger):
+            drawer = SynthesisDrawer()
+            images = [
+                make_grid([drawer.draw(syn_true, self.chemical_space), drawer.draw(syn_pred, self.chemical_space)])
+                for syn_true, syn_pred in zip(syn_true_list[:50], syn_pred_list[:50])
+            ]
+            self.logger.log_image(
+                key="val/samples",
+                images=images,
+            )
 
         return loss

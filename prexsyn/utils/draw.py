@@ -1,16 +1,17 @@
 import io
+import math
 import tempfile
 from pathlib import Path
 from typing import Any, cast
 
-import pydot
 import PIL.Image
+import pydot
 import rdkit.Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.rdDepictor import Compute2DCoords
 
 from prexsyn_engine.chemistry import Molecule, SynthesisNode
-from prexsyn_engine.chemspace import Synthesis, ChemicalSpace, PostfixNotationTokenType
+from prexsyn_engine.chemspace import ChemicalSpace, PostfixNotationTokenType, Synthesis
 
 
 def draw_molecule(mol: Molecule) -> PIL.Image.Image:
@@ -162,3 +163,25 @@ class SynthesisDrawer:
             P.write_pdf(pdf_output)  # type: ignore[attr-defined]
 
         return PIL.Image.open(io.BytesIO(P.create_png()))  # type: ignore[attr-defined]
+
+
+def make_grid(images: list[PIL.Image.Image]) -> PIL.Image.Image:
+    """Make a grid of images.
+
+    Args:
+        images (list[PIL.Image.Image]): A list of images.
+
+    Returns:
+        PIL.Image.Image: A grid of images.
+    """
+    width = max(image.size[0] for image in images)
+    height = max(image.size[1] for image in images)
+
+    num_cols = int(math.ceil(math.sqrt(len(images))))
+    num_rows = int(math.ceil(len(images) / num_cols))
+    grid = PIL.Image.new("RGB", (num_cols * width, num_rows * height), color=(255, 255, 255))
+    for i, image in enumerate(images):
+        x = width * (i % num_cols) + (width - image.size[0]) // 2
+        y = height * (i // num_cols) + (height - image.size[1]) // 2
+        grid.paste(image, (x, y))
+    return grid

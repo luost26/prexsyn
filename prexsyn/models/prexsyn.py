@@ -5,7 +5,7 @@ import torch
 from torch import nn
 
 from .attention import TransformerLayer, generate_square_subsequent_mask
-from .embeddings import Embedding, SynthesisEmbedder, DescriptorEmbedder, DescriptorEmbedderConfig
+from .embeddings import DescriptorEmbedder, DescriptorEmbedderConfig, Embedding, SynthesisEmbedder
 from .outputs.synthesis import Prediction, SynthesisOutput
 
 
@@ -63,6 +63,12 @@ class PrexSyn(nn.Module):
             rxn_token=rxn_token,
             end_token=end_token,
         )
+
+        self.pad_token = pad_token
+        self.end_token = end_token
+        self.start_token = start_token
+        self.bb_token = bb_token
+        self.rxn_token = rxn_token
 
     @staticmethod
     def create_descriptor_embedders(
