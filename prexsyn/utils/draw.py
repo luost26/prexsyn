@@ -34,7 +34,9 @@ def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     opts.setBackgroundColour((1, 1, 1, 0))  # RGBA white with 0 alpha (transparent)
     # opts.bondLineWidth = 1.0
     opts.setAtomPalette({0: (0.0, 0.0, 0.0)})  # Black for all atoms
-    opts.minFontSize = 18  # type: ignore[assignment]
+    opts.fixedFontSize = 18
+    opts.fixedBondLength = 23
+    opts.fixedScale = 1
     d2d.DrawMolecule(rdk_mol)
     d2d.FinishDrawing()
     img_data = d2d.GetDrawingText()
