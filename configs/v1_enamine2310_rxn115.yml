@@ -26,3 +26,8 @@ training:
   data_pipeline_num_threads: 16
   val_seed: 2026
   num_val_batches: 10
+  optimizer:
+    lr: 3.e-4
+  scheduler:
+    T_max: 500
+    eta_min: 1.e-5

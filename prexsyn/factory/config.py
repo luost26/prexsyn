@@ -1,6 +1,6 @@
 from pathlib import Path
 from dataclasses import dataclass
-from typing import cast
+from typing import Any, cast
 
 import omegaconf
 
@@ -55,6 +55,8 @@ class TrainingConfig:
     data_pipeline_num_threads: int
     num_val_batches: int
     val_seed: int
+    optimizer: dict[str, Any]
+    scheduler: dict[str, Any] | None
 
 
 @dataclass
@@ -70,4 +72,4 @@ class Config:
         schema = omegaconf.OmegaConf.structured(Config)
         base_conf = omegaconf.OmegaConf.load(path)
         conf = omegaconf.OmegaConf.merge(schema, base_conf)
-        return cast(Config, omegaconf.OmegaConf.to_object(conf))
+        return cast(Config, conf)  # duck typing
