@@ -52,7 +52,7 @@ def main(config_path: Path, devices: int, max_epochs: int, ckpt_path: Path | Non
             callbacks.LearningRateMonitor(logging_interval="step"),
         ],
         logger=[
-            loggers.WandbLogger(project="prexsyn-dev", save_dir=str(log_dir), name=config_name),
+            loggers.WandbLogger(project="prexsyn-dev", save_dir=str(log_dir)),
         ],
         devices=devices,
         gradient_clip_val=100.0,
