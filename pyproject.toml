@@ -23,6 +23,7 @@ dependencies = [
     "torch>=2.8.0,<2.9",
     "tqdm>=4.67.1,<5",
     "wandb>=0.22.2,<0.23",
+    "rdkit>=2025.9.6",
 ]
 
 [project.urls]
@@ -64,6 +65,14 @@ include = ["prexsyn", "prexsyn.*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "prexsyn.__version__" }
+
+[[tool.uv.index]]
+name = "prexsyn-engine-dev"
+url = "https://luost26.github.io/prexsyn-engine/simple"
+explicit = true
+
+[tool.uv.sources]
+prexsyn-engine = { index = "prexsyn-engine-dev" }
 
 [tool.ruff]
 line-length = 119

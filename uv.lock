@@ -2358,6 +2358,7 @@ dependencies = [
     { name = "pandas" },
     { name = "prexsyn-engine" },
     { name = "pydot" },
+    { name = "rdkit" },
     { name = "rich" },
     { name = "scikit-learn" },
     { name = "seaborn" },
@@ -2407,11 +2408,12 @@ requires-dist = [
     { name = "omegaconf", specifier = ">=2.3.0,<3" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pre-commit", marker = "extra == 'dev'" },
-    { name = "prexsyn-engine", specifier = ">=1.0.0.dev3,<2" },
+    { name = "prexsyn-engine", specifier = ">=1.0.0.dev3,<2", index = "https://luost26.github.io/prexsyn-engine/simple" },
     { name = "prexsyn-third-party", marker = "extra == 'eval'", git = "https://github.com/luost26/prexsyn-third-party.git" },
     { name = "pydot", specifier = ">=4.0.1,<5" },
     { name = "pyright", marker = "extra == 'dev'" },
     { name = "pytest", marker = "extra == 'dev'" },
+    { name = "rdkit", specifier = ">=2025.9.6" },
     { name = "rich", specifier = ">=14.2.0,<15" },
     { name = "ruff", marker = "extra == 'dev'" },
     { name = "scikit-learn", specifier = ">=1.7.2,<2" },
@@ -2426,15 +2428,14 @@ provides-extras = ["eval", "dev"]
 
 [[package]]
 name = "prexsyn-engine"
-version = "1.0.0.dev3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/41/dc/3e69b438dde11111cc75f6f3138f8274abb15c07570a5501bd49224113f7/prexsyn_engine-1.0.0.dev3.tar.gz", hash = "sha256:9265fe9f1a9e2c0e2e2b5ecfd0eb0ddee521d969f9b42b37b459427b760d8032", size = 204467, upload-time = "2026-03-31T21:06:52.694Z" }
+version = "1.0.0.dev3+build.36"
+source = { registry = "https://luost26.github.io/prexsyn-engine/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/19/bde52a4bf44ec6988f7ff43d43dfc3d26684b16aefded00b0f1cd728311e/prexsyn_engine-1.0.0.dev3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d82cbf82671adf2b6b5879a32d74cd418839ca115cc729b542a9551ef225f6e3", size = 3452002, upload-time = "2026-03-31T21:06:43.715Z" },
-    { url = "https://files.pythonhosted.org/packages/3d/bb/9997c8329928196b83fe436abaa2755ff72a6252d8f095fd2921d1338bac/prexsyn_engine-1.0.0.dev3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c86b9c08739af352bc086978fefe728e67b6e6d7eb7f3a08fd36b4af8ef16f00", size = 3446740, upload-time = "2026-03-31T21:06:45.793Z" },
-    { url = "https://files.pythonhosted.org/packages/2a/19/0fb91240dcc232ececdf4c7a4fa62dea1f83638617a96cee3fcf4c89f62d/prexsyn_engine-1.0.0.dev3-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f7967d66f5ab3a9c72b21dbe36a6f1d54cb03e1e20add02a2da2390a762d2c85", size = 3448277, upload-time = "2026-03-31T21:06:47.405Z" },
-    { url = "https://files.pythonhosted.org/packages/cc/18/bdd683f67c5a3b53693969b535492125c741ecadaf01b7f9321fe2dba3af/prexsyn_engine-1.0.0.dev3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b7cd00b9af4b8a3f385c0674a2213503eca82e948597e3446df0df7d65547923", size = 3448214, upload-time = "2026-03-31T21:06:49.006Z" },
-    { url = "https://files.pythonhosted.org/packages/20/d7/ddfc56a88bfc3f061fa3ebcfe288a4fc691419b6ed9c9c8286b93a50e081/prexsyn_engine-1.0.0.dev3-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7343dcb4cb8875b9cec34089de87d06e9a38444d48a47912dc59be69cf77f089", size = 3456608, upload-time = "2026-03-31T21:06:51.057Z" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
 ]
 
 [[package]]
