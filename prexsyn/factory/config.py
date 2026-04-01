@@ -50,6 +50,11 @@ class DataPipelineConfig:
 @dataclass
 class TrainingConfig:
     batch_size: int
+    val_freq: int
+    seed: int
+    data_pipeline_num_threads: int
+    num_val_batches: int
+    val_seed: int
 
 
 @dataclass

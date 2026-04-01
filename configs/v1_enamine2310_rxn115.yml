@@ -21,3 +21,8 @@ model:
   bb_embed_dim: 1024
 training:
   batch_size: 1024
+  val_freq: 1000
+  seed: 2026
+  data_pipeline_num_threads: 16
+  val_seed: 2026
+  num_val_batches: 10
