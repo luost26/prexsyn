@@ -13,18 +13,28 @@ from prexsyn_engine.chemistry import Molecule, SynthesisNode
 from prexsyn_engine.chemspace import Synthesis, ChemicalSpace, PostfixNotationTokenType
 
 
-def draw_molecule(mol: Molecule, size: int | tuple[int, int] = 300, recompute_coords: bool = False) -> PIL.Image.Image:
+def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     rdk_mol = cast(rdkit.Chem.Mol, mol.to_rdkit_mol())
-    if recompute_coords:
-        Compute2DCoords(rdk_mol)
-    size = (size, size) if isinstance(size, int) else size
+    Compute2DCoords(rdk_mol)
 
-    d2d = Draw.MolDraw2DCairo(size[0], size[1])
+    # Get the bounding box of the molecule
+    conf = rdk_mol.GetConformer()
+    xs = [conf.GetAtomPosition(i).x for i in range(rdk_mol.GetNumAtoms())]
+    ys = [conf.GetAtomPosition(i).y for i in range(rdk_mol.GetNumAtoms())]
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+
+    # Get size according to the bounding box, with some padding
+    padding = 5.0
+    width = int(max_x - min_x + 2 * padding) * 15
+    height = int(max_y - min_y + 2 * padding) * 15
+
+    d2d = Draw.MolDraw2DCairo(width, height)
     opts = d2d.drawOptions()
     opts.setBackgroundColour((1, 1, 1, 0))  # RGBA white with 0 alpha (transparent)
     # opts.bondLineWidth = 1.0
     opts.setAtomPalette({0: (0.0, 0.0, 0.0)})  # Black for all atoms
-    opts.minFontSize = 20  # type: ignore[assignment]
+    opts.minFontSize = 18  # type: ignore[assignment]
     d2d.DrawMolecule(rdk_mol)
     d2d.FinishDrawing()
     img_data = d2d.GetDrawingText()
@@ -34,7 +44,6 @@ def draw_molecule(mol: Molecule, size: int | tuple[int, int] = 300, recompute_co
 class SynthesisDrawer:
     def __init__(self):
         super().__init__()
-        self.node_image_size = 200
         self.show_intermediate = False
         self.rankdir = "LR"
         self.fontname = "Fira Sans"
@@ -51,7 +60,7 @@ class SynthesisDrawer:
 
     def mol_node(self, node_id: str, mol: Molecule, annots: list[tuple[str, Any] | str]) -> pydot.Node:
         im_path = self.working_dir / f"{node_id}.png"
-        draw_molecule(mol, size=self.node_image_size, recompute_coords=True).save(im_path)
+        draw_molecule(mol).save(im_path)
         label_lines = ["<"]
 
         label_lines += [
