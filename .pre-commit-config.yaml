@@ -3,7 +3,7 @@ repos:
     rev: v0.14.7
     hooks:
       - id: ruff-check
-        args: [--fix]
+        args: [--select, I, --fix]
       - id: ruff-format
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.407
