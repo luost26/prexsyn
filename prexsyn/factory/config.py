@@ -1,4 +1,3 @@
-from collections.abc import Mapping
 from pathlib import Path
 from dataclasses import dataclass
 from typing import cast
@@ -10,8 +9,9 @@ import omegaconf
 class ChemicalSpaceConfig:
     cache_path: Path
     remote_url: str | None = None
-    sdf_path: Path | None = None
+    bb_path: Path | None = None
     rxn_path: Path | None = None
+    building_block_selectivity_cutoff: int | None = None
 
 
 @dataclass
@@ -55,7 +55,7 @@ class TrainingConfig:
 @dataclass
 class Config:
     chemical_space: ChemicalSpaceConfig
-    descriptors: Mapping[str, DescriptorConfig]
+    descriptors: dict[str, DescriptorConfig]
     featurizer: FeaturizerConfig
     model: ModelConfig
     training: TrainingConfig
