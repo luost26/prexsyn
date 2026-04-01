@@ -55,6 +55,7 @@ class TrainingConfig:
     data_pipeline_num_threads: int
     num_val_batches: int
     val_seed: int
+    loss_weights: dict[str, float]
     optimizer: dict[str, Any]
     scheduler: dict[str, Any] | None
 

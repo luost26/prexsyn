@@ -26,6 +26,10 @@ training:
   data_pipeline_num_threads: 16
   val_seed: 2026
   num_val_batches: 10
+  loss_weights:
+    token_types: 1.0
+    bb_indices: 1.0
+    rxn_indices: 1.0
   optimizer:
     lr: 3.e-4
   scheduler:

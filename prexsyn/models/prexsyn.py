@@ -85,6 +85,12 @@ class PrexSyn(nn.Module):
     def embed_descriptor(self, name: str, descriptor: torch.Tensor) -> Embedding:
         return self.descriptor_embedders[name](descriptor)
 
+    def embed_descriptors(self, descriptors: list[tuple[str, torch.Tensor]]) -> Embedding:
+        e_descs: list[Embedding] = []
+        for d_name, d_val in descriptors:
+            e_descs.append(self.embed_descriptor(d_name, d_val))
+        return Embedding.concat_along_batch_dim(*e_descs)
+
     def embed_synthesis(
         self, token_types: torch.Tensor, bb_indices: torch.Tensor, rxn_indices: torch.Tensor
     ) -> Embedding:
@@ -123,8 +129,7 @@ class PrexSyn(nn.Module):
 
         def __call__(
             self,
-            descriptor_name: str,
-            descriptor: torch.Tensor,
+            descriptors: list[tuple[str, torch.Tensor]],
             token_types: torch.Tensor,
             bb_indices: torch.Tensor,
             rxn_indices: torch.Tensor,
@@ -133,14 +138,13 @@ class PrexSyn(nn.Module):
 
     def forward(
         self,
-        descriptor_name: str,
-        descriptor: torch.Tensor,
+        descriptors: list[tuple[str, torch.Tensor]],
         token_types: torch.Tensor,
         bb_indices: torch.Tensor,
         rxn_indices: torch.Tensor,
         data_weights: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
-        e_descriptor = self.embed_descriptor(descriptor_name, descriptor)
+        e_descriptor = self.embed_descriptors(descriptors)
         e_synthesis = self.embed_synthesis(token_types, bb_indices, rxn_indices)
         h_syn = self.encode(e_descriptor, e_synthesis)
 

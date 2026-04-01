@@ -5,6 +5,7 @@ import lightning as L
 from omegaconf import DictConfig
 
 from prexsyn.factory import Config, get_chemical_space, get_model, get_detokenizer
+from .data_module import SynthesisBatch
 
 
 def sum_weighted_losses(losses: dict[str, torch.Tensor], weights: dict[str, float] | None) -> torch.Tensor:
@@ -52,3 +53,18 @@ class PrexSynWrapper(L.LightningModule):
                 )
             )
         return optimizers, schedulers
+
+    def training_step(self, batch: SynthesisBatch, batch_idx: int) -> torch.Tensor:
+        token_types, bb_indices, rxn_indices = batch["synthesis"].unbind(-1)
+        loss_dict = self.model(
+            descriptors=batch["descriptors"],
+            token_types=token_types,
+            bb_indices=bb_indices,
+            rxn_indices=rxn_indices,
+        )
+        loss = sum_weighted_losses(loss_dict, self.config.training.loss_weights)
+        self.log("train/loss", loss, on_step=True, prog_bar=True, logger=True)
+        for k, v in loss_dict.items():
+            self.log(f"train/loss_{k}", v, on_step=True, prog_bar=False, logger=True)
+
+        return loss

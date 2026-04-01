@@ -1,0 +1,6 @@
+from _typeshed import Incomplete
+
+from .rdchem import Mol
+
+def __getattr__(name: str) -> Incomplete: ...
+def Compute2DCoords(mol: Mol) -> None: ...
