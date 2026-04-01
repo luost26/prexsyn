@@ -10,6 +10,14 @@ from prexsyn.training.data_module import SynthesisDataModule
 from prexsyn.training.model_wrapper import PrexSynWrapper
 
 
+def generate_run_name(config_name: str):
+    from datetime import datetime
+
+    # Format is run_name-YYYYmmdd-HHMMSS
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return f"{config_name}-{timestamp}"
+
+
 @click.command()
 @click.argument("config_path", type=click.Path(exists=True, path_type=Path), required=True)
 @click.option("--devices", type=int, default=1)
@@ -18,6 +26,9 @@ from prexsyn.training.model_wrapper import PrexSynWrapper
 def main(config_path: Path, devices: int, max_epochs: int, ckpt_path: Path | None):
     config = Config.from_yaml(config_path)
     config_name = config_path.stem
+    run_name = generate_run_name(config_name)
+    log_dir = Path("./logs") / run_name
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     torch.set_float32_matmul_precision("medium")
     L.seed_everything(config.training.seed, workers=True)
@@ -31,11 +42,17 @@ def main(config_path: Path, devices: int, max_epochs: int, ckpt_path: Path | Non
         strategy=strategies.DDPStrategy(static_graph=True),
         num_sanity_val_steps=1,
         callbacks=[
-            callbacks.ModelCheckpoint(save_last=True, every_n_epochs=25, save_top_k=-1),
+            callbacks.ModelCheckpoint(
+                save_last=True,
+                every_n_epochs=1,
+                save_top_k=-1,
+                save_on_exception=True,
+                dirpath=log_dir,
+            ),
             callbacks.LearningRateMonitor(logging_interval="step"),
         ],
         logger=[
-            loggers.WandbLogger(project="prexsyn-dev", save_dir="./logs", name=config_name),
+            loggers.WandbLogger(project="prexsyn-dev", save_dir=str(log_dir), name=config_name),
         ],
         devices=devices,
         gradient_clip_val=100.0,
