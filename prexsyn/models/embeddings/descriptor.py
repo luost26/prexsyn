@@ -1,5 +1,5 @@
 import abc
-from typing import cast, TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import torch
 from torch import nn
@@ -23,6 +23,10 @@ class DescriptorEmbedder(nn.Module, abc.ABC):
             nn.ReLU(),
             nn.Linear(embedding_dim, embedding_dim * num_tokens),
         )
+
+    @property
+    def dtype(self):
+        return cast(torch.dtype, self.mlp[0].weight.dtype)
 
     if TYPE_CHECKING:
 

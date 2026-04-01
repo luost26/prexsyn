@@ -14,13 +14,13 @@ descriptors:
 featurizer:
   max_length: 16
 model:
-  dim: 1024
+  dim: 512
   nhead: 16
-  dim_feedforward: 2048
-  num_layers: 12
-  bb_embed_dim: 1024
+  dim_feedforward: 1024
+  num_layers: 6
+  bb_embed_dim: 512
 training:
-  batch_size: 1024
+  batch_size: 512
   val_freq: 1000
   seed: 2026
   data_pipeline_num_threads: 16

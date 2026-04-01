@@ -89,7 +89,8 @@ class PrexSyn(nn.Module):
         return next(self.parameters()).device
 
     def embed_descriptor(self, name: str, descriptor: torch.Tensor) -> Embedding:
-        return self.descriptor_embedders[name](descriptor)
+        embedder = self.descriptor_embedders[name]
+        return embedder(descriptor.to(embedder.dtype))
 
     def embed_descriptors(self, descriptors: list[tuple[str, torch.Tensor]]) -> Embedding:
         e_descs: list[Embedding] = []

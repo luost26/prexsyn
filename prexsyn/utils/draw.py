@@ -1,3 +1,4 @@
+import hashlib
 import io
 import math
 import tempfile
@@ -51,6 +52,7 @@ class SynthesisDrawer:
         self.rankdir = "LR"
         self.fontname = "Fira Sans"
         self.dpi = 200
+        self.bgcolor = "transparent"
 
         self.working_dir_handle = tempfile.TemporaryDirectory()
         self.working_dir = Path(self.working_dir_handle.name)
@@ -88,6 +90,9 @@ class SynthesisDrawer:
             fontname=self.fontname,
         )
 
+    def node_id_from_mol(self, mol: Molecule) -> str:
+        return hashlib.md5(mol.smiles().encode()).hexdigest()
+
     def draw(self, syn: Synthesis, cs: ChemicalSpace, pdf_output: Path | None = None) -> PIL.Image.Image:
         P = pydot.Dot(
             "",
@@ -96,7 +101,7 @@ class SynthesisDrawer:
             fontname=self.fontname,
             fontsize=8,
             dpi=self.dpi,
-            bgcolor="transparent",
+            bgcolor=self.bgcolor,
             nodesep=0.02,
         )
 
@@ -122,21 +127,21 @@ class SynthesisDrawer:
             snode = queue.pop(0)
             pfn_node = leaf_nodes[snode.index()]
             if pfn_node is not None:
-                node_id = snode.at(0).smiles()
+                node_id = self.node_id_from_mol(snode.at(0))
                 nodes[node_id] = pfn_node
             else:
                 rxn_token = pfn[snode.index()]
                 rxn = cs.rxn_lib()[rxn_token.index]
                 for product_idx in range(snode.size()):
                     product_mol = snode.at(product_idx)
-                    node_id = product_mol.smiles()
+                    node_id = self.node_id_from_mol(product_mol)
                     nodes[node_id] = self.mol_node(f"product_{node_id}", product_mol, [rxn.name])
 
                     precursors = snode.precursors(product_idx)
                     for precursor in precursors:
                         edges.add(
                             (
-                                precursor.molecule.smiles(),
+                                self.node_id_from_mol(precursor.molecule),
                                 node_id,
                                 precursor.reactant_name,
                             )

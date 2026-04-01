@@ -29,7 +29,7 @@ class SynthesisDataStream:
         desc_confs = (
             config.descriptors
             if descriptor_subset is None
-            else {k: v for k, v in config.descriptors.items() if k in descriptor_subset}
+            else {d_name: config.descriptors[d_name] for d_name in descriptor_subset}
         )
         self.descriptor_slices: list[tuple[str, slice]] = []
         slice_size = config.training.batch_size // len(desc_confs)
@@ -49,12 +49,18 @@ class SynthesisDataStream:
             self._data_pipeline.start_workers(self.worker_seeds)
         return self._data_pipeline
 
+    def __len__(self):
+        return self.virtual_length
+
     def __getitem__(self, idx: int):
         if idx >= self.virtual_length:
             raise IndexError
 
         data = self.data_pipeline.get(self.config.training.batch_size)
-        batch: SynthesisBatch = {"descriptors": [], "synthesis": torch.from_numpy(data["synthesis"])}
+        batch: SynthesisBatch = {
+            "descriptors": [],
+            "synthesis": torch.from_numpy(data["synthesis"]),
+        }
         for d_name, d_slice in self.descriptor_slices:
             batch["descriptors"].append((d_name, torch.from_numpy(data[d_name][d_slice])))
 
@@ -84,7 +90,7 @@ class SynthesisDataModule(L.LightningDataModule):
                 config=self.config,
                 virtual_length=self.config.training.num_val_batches,
                 worker_seeds=[self.config.training.val_seed],
-                descriptor_subset=set(list(self.config.descriptors.keys())[0]),
+                descriptor_subset={list(self.config.descriptors.keys())[0]},
             )
             self.val_dataset = [batch for batch in val_stream]
             torch.save(self.val_dataset, self.val_cache_path)
