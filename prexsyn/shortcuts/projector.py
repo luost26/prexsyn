@@ -13,6 +13,33 @@ from prexsyn_engine.chemspace import Synthesis
 from prexsyn_engine.detokenizer import MultiThreadedDetokenizer
 
 
+@dataclass
+class _Result:
+    @dataclass
+    class Item:
+        molecule: Molecule
+        synthesis: Synthesis
+        similarity: float
+
+        def __iter__(self):
+            return iter((self.molecule, self.synthesis, self.similarity))
+
+    results: list[Item]
+    time: float
+
+    def __len__(self):
+        return len(self.results)
+
+    def best(self):
+        best_item = max(self.results, key=lambda item: item.similarity)
+        return best_item
+
+    def best_similarity(self):
+        if not self.results:
+            return 0.0
+        return self.best().similarity
+
+
 class MoleculeProjector:
     def __init__(
         self,
@@ -41,11 +68,6 @@ class MoleculeProjector:
     def _compute_descriptor(self, mol: Molecule):
         return self.descriptor_function(mol)[None, :]
 
-    @dataclass
-    class Result:
-        results: list[tuple[Molecule, Synthesis, float]]
-        time: float
-
     def __call__(self, mol: Molecule | str | rdkit.Chem.Mol):
         t_start = time.perf_counter()
 
@@ -67,7 +89,7 @@ class MoleculeProjector:
 
         order = sims.argsort()[::-1]
 
-        return self.Result(
-            results=[(mols[i], results[mol_syn_index[i]], float(sims[i])) for i in order],
+        return _Result(
+            results=[_Result.Item(mols[i], results[mol_syn_index[i]], float(sims[i])) for i in order],
             time=t_end - t_start,
         )

@@ -7,13 +7,13 @@ import torch
 def _tanimoto_similarity_torch(x1: torch.Tensor, x2: torch.Tensor):
     intersection = torch.min(x1, x2).sum(dim=-1)
     union = torch.max(x1, x2).sum(dim=-1)
-    return intersection / (union + 1e-8)
+    return intersection / union.clamp(min=1e-8)
 
 
 def _tanimoto_similarity_numpy(x1: np.ndarray, x2: np.ndarray):
     intersection = np.minimum(x1, x2).sum(axis=-1)
     union = np.maximum(x1, x2).sum(axis=-1)
-    return intersection / (union + 1e-8)
+    return intersection / np.clip(union, a_min=1e-8, a_max=None)
 
 
 @overload

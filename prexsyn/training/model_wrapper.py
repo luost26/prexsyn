@@ -114,15 +114,15 @@ class PrexSynWrapper(L.LightningModule):
         self.log("val/success_rate", count_success / len(syn_pred_list), on_step=False, prog_bar=False, logger=True)
 
         if batch_idx == 0 and isinstance(self.logger, WandbLogger):
-            drawer = SynthesisDrawer()
-            drawer.bgcolor = "white"
-            images = [
-                make_grid([drawer.draw(syn_true, self.chemical_space), drawer.draw(syn_pred, self.chemical_space)])
-                for syn_true, syn_pred in zip(syn_true_list[:50], syn_pred_list[:50])
-            ]
-            self.logger.log_image(
-                key="val/samples",
-                images=images,
-            )
+            with SynthesisDrawer() as drawer:
+                drawer.bgcolor = "white"
+                images = [
+                    make_grid([drawer.draw(syn_true, self.chemical_space), drawer.draw(syn_pred, self.chemical_space)])
+                    for syn_true, syn_pred in zip(syn_true_list[:50], syn_pred_list[:50])
+                ]
+                self.logger.log_image(
+                    key="val/samples",
+                    images=images,
+                )
 
         return loss
