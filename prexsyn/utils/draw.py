@@ -30,7 +30,6 @@ def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     padding = 5.0
     width = int(max_x - min_x + 2 * padding) * 15
     height = int(max_y - min_y + 2 * padding) * 15
-
     d2d = Draw.MolDraw2DCairo(width, height)
     opts = d2d.drawOptions()
     opts.setBackgroundColour((1, 1, 1, 0))  # RGBA white with 0 alpha (transparent)
@@ -38,7 +37,8 @@ def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     opts.setAtomPalette({0: (0.0, 0.0, 0.0)})  # Black for all atoms
     opts.fixedFontSize = 18
     opts.fixedBondLength = 23
-    opts.fixedScale = 1
+    # don't scale the molecule to fit the image, since we already sized it according to the bounding box
+    # opts.fixedScale = 1
     d2d.DrawMolecule(rdk_mol)
     d2d.FinishDrawing()
     img_data = d2d.GetDrawingText()
