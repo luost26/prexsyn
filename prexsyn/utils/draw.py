@@ -38,7 +38,7 @@ def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     opts.fixedFontSize = 18
     opts.fixedBondLength = 23
     # don't scale the molecule to fit the image, since we already sized it according to the bounding box
-    # opts.fixedScale = 1
+    # no need to set: opts.fixedScale = 1
     d2d.DrawMolecule(rdk_mol)
     d2d.FinishDrawing()
     img_data = d2d.GetDrawingText()

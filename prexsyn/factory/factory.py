@@ -1,9 +1,14 @@
+from pathlib import Path
+
+import torch
+
 import prexsyn_engine
-from prexsyn.utils.download import download
-from prexsyn.models.prexsyn import PrexSyn
 from prexsyn.models.embeddings import DescriptorEmbedderConfig
+from prexsyn.models.prexsyn import PrexSyn
+from prexsyn.utils.download import download
+
+from .config import ChemicalSpaceConfig, Config, DataPipelineConfig, DescriptorConfig, FeaturizerConfig
 from .descriptor_registry import get_descriptor_constructor
-from .config import FeaturizerConfig, ChemicalSpaceConfig, DescriptorConfig, Config, DataPipelineConfig
 
 
 def download_chemical_space_if_needed(cs_conf: ChemicalSpaceConfig):
@@ -125,3 +130,14 @@ def get_detokenizer(
         token_def=get_token_def(conf.featurizer),
         max_outcomes_per_reaction=max_outcomes_per_reaction,
     )
+
+
+def load_model_and_config(model_path: Path) -> tuple[PrexSyn, Config]:
+    conf_path = model_path.with_suffix(".yml")
+    if not conf_path.exists():
+        raise FileNotFoundError(f"Config file not found for model at {model_path}, expected at {conf_path}")
+
+    config = Config.from_yaml(conf_path)
+    model = get_model(config)
+    model.load_state_dict(torch.load(model_path, map_location="cpu"))
+    return model, config

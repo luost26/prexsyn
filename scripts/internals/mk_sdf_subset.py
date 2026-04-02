@@ -5,7 +5,7 @@ from rdkit import Chem
 @click.command()
 @click.option("-i", "--input_sdf", type=click.Path(exists=True), required=True)
 @click.option("-o", "--output_sdf", type=click.Path(), required=True)
-@click.option("-n", "--num_molecules", type=int, default=1000)
+@click.option("-n", "--num_molecules", type=int, default=200)
 def main(input_sdf, output_sdf, num_molecules):
     suppl = Chem.SDMolSupplier(input_sdf)
 

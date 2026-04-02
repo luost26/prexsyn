@@ -1,9 +1,10 @@
 chemical_space:
-  cache_path: data/chemical_spaces/enamine-test_rxn115.chemspace
+  cache_path: data/chemical_spaces/enamine-test-small_rxn115.chemspace
   remote_url:
-  bb_path: data/building_blocks/Enamine-test.sdf
+  bb_path: data/building_blocks/enamine-test-small.sdf
   rxn_path: data/reactions/rxn115.txt
   building_block_selectivity_cutoff: 2
+
 descriptors:
   ecfp4:
     type: ecfp4
@@ -11,14 +12,17 @@ descriptors:
   fcfp4:
     type: fcfp4
     num_embedding_tokens: 4
+
 featurizer:
   max_length: 16
+
 model:
   dim: 512
   nhead: 16
   dim_feedforward: 1024
   num_layers: 6
   bb_embed_dim: 512
+
 training:
   batch_size: 512
   val_freq: 1000
