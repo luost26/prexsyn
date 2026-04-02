@@ -1,6 +1,5 @@
 chemical_space:
   cache_path: data/chemical_spaces/enamine2310_rxn115.chemspace
-  remote_url:
   bb_path: data/building_blocks/Enamine_Rush-Delivery_Building_Blocks-US_223244cmpd_20231001.sdf
   rxn_path: data/reactions/rxn115.txt
   building_block_selectivity_cutoff: 8 # No cutoff in the original implementation

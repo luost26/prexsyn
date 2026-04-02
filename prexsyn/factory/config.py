@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
 
@@ -8,7 +8,6 @@ import omegaconf
 @dataclass
 class ChemicalSpaceConfig:
     cache_path: Path
-    remote_url: str | None = None
     bb_path: Path | None = None
     rxn_path: Path | None = None
     building_block_selectivity_cutoff: int | None = None
@@ -61,12 +60,27 @@ class TrainingConfig:
 
 
 @dataclass
+class RemoteConfig:
+    checkpoint_url: str | None = None
+    chemical_space_url: str | None = None
+
+
+@dataclass
+class Note:
+    name: str = ""
+    description: str = ""
+
+
+@dataclass
 class Config:
     chemical_space: ChemicalSpaceConfig
     descriptors: list[DescriptorConfig]
     featurizer: FeaturizerConfig
     model: ModelConfig
     training: TrainingConfig
+
+    remote: RemoteConfig = field(default_factory=RemoteConfig)
+    note: Note = field(default_factory=Note)
 
     @staticmethod
     def from_yaml(path: Path):

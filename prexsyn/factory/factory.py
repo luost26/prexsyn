@@ -5,15 +5,9 @@ import torch
 import prexsyn_engine
 from prexsyn.models.embeddings import DescriptorEmbedderConfig
 from prexsyn.models.prexsyn import PrexSyn
-from prexsyn.utils.download import download
 
 from .config import ChemicalSpaceConfig, Config, DataPipelineConfig, DescriptorConfig, FeaturizerConfig
 from .descriptor_registry import get_descriptor_constructor
-
-
-def download_chemical_space_if_needed(cs_conf: ChemicalSpaceConfig):
-    if not cs_conf.cache_path.exists() and cs_conf.remote_url is not None:
-        download(cs_conf.remote_url, cs_conf.cache_path, desc="Downloading chemical space cache")
 
 
 def get_chemical_space(cs_conf: ChemicalSpaceConfig):

@@ -1,6 +1,5 @@
 chemical_space:
   cache_path: data/chemical_spaces/enamine-test-small_rxn115.chemspace
-  remote_url:
   bb_path: data/building_blocks/enamine-test-small.sdf
   rxn_path: data/reactions/rxn115.txt
   building_block_selectivity_cutoff: 2
