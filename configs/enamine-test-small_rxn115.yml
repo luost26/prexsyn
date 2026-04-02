@@ -6,11 +6,9 @@ chemical_space:
   building_block_selectivity_cutoff: 2
 
 descriptors:
-  ecfp4:
-    type: ecfp4
+  - type: ecfp4
     num_embedding_tokens: 4
-  fcfp4:
-    type: fcfp4
+  - type: fcfp4
     num_embedding_tokens: 4
 
 featurizer:

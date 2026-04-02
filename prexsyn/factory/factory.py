@@ -73,7 +73,7 @@ def get_data_pipeline(conf: Config, chemspace: prexsyn_engine.chemspace.Chemical
     if chemspace is None:
         chemspace = get_chemical_space(conf.chemical_space)
 
-    mol_descs = {name: get_descriptor_function(desc_conf) for name, desc_conf in conf.descriptors.items()}
+    mol_descs = {desc_conf.type: get_descriptor_function(desc_conf) for desc_conf in conf.descriptors}
     token_def = get_token_def(conf.featurizer)
 
     data_pipeline = prexsyn_engine.datapipe.DataPipeline(
@@ -92,9 +92,9 @@ def get_data_pipeline(conf: Config, chemspace: prexsyn_engine.chemspace.Chemical
 
 def get_model(conf: Config):
     desc_confs: dict[str, DescriptorEmbedderConfig] = {}
-    for name, desc_conf in conf.descriptors.items():
+    for desc_conf in conf.descriptors:
         desc_embedder_config = get_descriptor_embedder_config(desc_conf)
-        desc_confs[name] = desc_embedder_config
+        desc_confs[desc_conf.type] = desc_embedder_config
 
     token_def = get_token_def(conf.featurizer)
 

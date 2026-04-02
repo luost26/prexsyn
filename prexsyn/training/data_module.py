@@ -29,15 +29,15 @@ class SynthesisDataStream:
         desc_confs = (
             config.descriptors
             if descriptor_subset is None
-            else {d_name: config.descriptors[d_name] for d_name in descriptor_subset}
+            else [desc_conf for desc_conf in config.descriptors if desc_conf.type in descriptor_subset]
         )
         self.descriptor_slices: list[tuple[str, slice]] = []
         slice_size = config.training.batch_size // len(desc_confs)
-        for i, d_name in enumerate(desc_confs.keys()):
+        for i, d_conf in enumerate(desc_confs):
             if i == len(desc_confs) - 1:
-                self.descriptor_slices.append((d_name, slice(i * slice_size, None)))
+                self.descriptor_slices.append((d_conf.type, slice(i * slice_size, None)))
             else:
-                self.descriptor_slices.append((d_name, slice(i * slice_size, (i + 1) * slice_size)))
+                self.descriptor_slices.append((d_conf.type, slice(i * slice_size, (i + 1) * slice_size)))
 
     if TYPE_CHECKING:
         _data_pipeline: prexsyn_engine.datapipe.DataPipeline
@@ -90,7 +90,7 @@ class SynthesisDataModule(L.LightningDataModule):
                 config=self.config,
                 virtual_length=self.config.training.num_val_batches,
                 worker_seeds=[self.config.training.val_seed],
-                descriptor_subset={list(self.config.descriptors.keys())[0]},
+                descriptor_subset={self.config.descriptors[0].type},
             )
             self.val_dataset = [batch for batch in val_stream]
             torch.save(self.val_dataset, self.val_cache_path)

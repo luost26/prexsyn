@@ -1,5 +1,5 @@
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, cast
 
 import omegaconf
@@ -63,7 +63,7 @@ class TrainingConfig:
 @dataclass
 class Config:
     chemical_space: ChemicalSpaceConfig
-    descriptors: dict[str, DescriptorConfig]
+    descriptors: list[DescriptorConfig]
     featurizer: FeaturizerConfig
     model: ModelConfig
     training: TrainingConfig

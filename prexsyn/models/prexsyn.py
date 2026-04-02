@@ -88,6 +88,10 @@ class PrexSyn(nn.Module):
     def device(self) -> torch.device:
         return next(self.parameters()).device
 
+    @property
+    def dtype(self) -> torch.dtype:
+        return next(self.parameters()).dtype
+
     def embed_descriptor(self, name: str, descriptor: torch.Tensor) -> Embedding:
         embedder = self.descriptor_embedders[name]
         return embedder(descriptor.to(embedder.dtype))
