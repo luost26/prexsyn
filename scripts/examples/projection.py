@@ -44,14 +44,14 @@ def main(
     draw = SynthesisDrawer()
 
     result = projector(smiles)
-    for i, (mol, syn, sim) in enumerate(result.results):
+    for i, item in enumerate(result.results):
         if i >= top:
             break
         if draw_output_dir is not None:
-            img = draw.draw(syn, cs)
-            img.save(draw_output_dir / f"synthesis_{i}_sim{sim:.4f}.png")
+            img = draw.draw(item.synthesis, cs)
+            img.save(draw_output_dir / f"synthesis_{i}_sim{item.similarity:.4f}.png")
             img.close()
-        print(f"Sample {i}: similarity={sim:.4f}, product={mol.smiles()}")
+        print(f"Sample {i}: similarity={item.similarity:.4f}, product={item.synthesis.products()[0].smiles()}")
 
 
 if __name__ == "__main__":

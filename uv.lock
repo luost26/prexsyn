@@ -2428,14 +2428,14 @@ provides-extras = ["eval", "dev"]
 
 [[package]]
 name = "prexsyn-engine"
-version = "1.0.0.dev3+build.36"
+version = "1.0.0.dev3+build.38"
 source = { registry = "https://luost26.github.io/prexsyn-engine/simple" }
 wheels = [
-    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
-    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
-    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
-    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
-    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.36-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.38-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.38-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.38-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.38-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
+    { url = "https://luost.me/prexsyn-engine/simple/prexsyn-engine/prexsyn_engine-1.0.0.dev3+build.38-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl" },
 ]
 
 [[package]]

@@ -44,7 +44,7 @@ def main(config_path: Path, devices: int, max_epochs: int, ckpt_path: Path | Non
         callbacks=[
             callbacks.ModelCheckpoint(
                 save_last=True,
-                every_n_epochs=1,
+                every_n_epochs=25,
                 save_top_k=-1,
                 save_on_exception=True,
                 dirpath=log_dir,
