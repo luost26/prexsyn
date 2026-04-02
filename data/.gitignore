@@ -4,6 +4,7 @@
 !reactions/*.txt
 !building_blocks
 !building_blocks/.gitkeep
+!building_blocks/enamine-test-small.sdf
 !chemical_spaces
 !chemical_spaces/.gitkeep
 !trained_models
