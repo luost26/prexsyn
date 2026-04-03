@@ -6,7 +6,7 @@ authors = [{ name = "Shitong Luo", email = "luost26@gmail.com" }]
 readme = "README.md"
 license-files = ["LICENSE"]
 dependencies = [
-    "prexsyn-engine>=1.0.0.dev3,<2",
+    "prexsyn-engine>=1.0.0.dev4,<2",
     "click>=8.3.0,<9",
     "hydra-core>=1.3.2,<2",
     "joblib>=1.5.2,<2",
@@ -66,13 +66,13 @@ include = ["prexsyn", "prexsyn.*"]
 [tool.setuptools.dynamic]
 version = { attr = "prexsyn.__version__" }
 
-[[tool.uv.index]]
-name = "prexsyn-engine-dev"
-url = "https://luost26.github.io/prexsyn-engine/simple"
-explicit = true
+# [[tool.uv.index]]
+# name = "prexsyn-engine-dev"
+# url = "https://luost26.github.io/prexsyn-engine/simple"
+# explicit = true
 
-[tool.uv.sources]
-prexsyn-engine = { index = "prexsyn-engine-dev" }
+# [tool.uv.sources]
+# prexsyn-engine = { index = "prexsyn-engine-dev" }
 
 [tool.ruff]
 line-length = 119
