@@ -3,6 +3,10 @@
 ![PrexSyn Overview](imgs/overview.png)
 
 
+## ⚠️ Deprecation Notice
+
+PrexSyn v0 is now deprecated. We recommend using the latest version of PrexSyn for improved performance and features, and a more stable PrexSyn Engine v1 which can be installed through PyPI.
+
 ## Introduction
 
 PrexSyn is an efficient, accurate, and programmable framework for synthesizable molecular design.
