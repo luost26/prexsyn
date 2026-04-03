@@ -5,7 +5,7 @@
 
 ## ⚠️ Deprecation Notice
 
-PrexSyn v0 is now deprecated. We recommend using the latest version of PrexSyn for improved performance and features, and a more stable PrexSyn Engine v1 which can be installed through PyPI.
+PrexSyn v0 is now deprecated. We recommend using the latest version of PrexSyn for improved performance and features, with a more stable PrexSyn Engine v1 which is available through PyPI.
 
 ## Introduction
 

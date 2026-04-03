@@ -10,7 +10,7 @@ PrexSyn is an efficient, accurate, and programmable framework for exploring synt
 
 ## ⚠️ PrexSyn v0 Deprecated
 
-This branch contains the code for PrexSyn v0, which has been deprecated. We recommend using the latest version of PrexSyn for improved performance and features, and a more stable PrexSyn Engine v1 which can be installed through PyPI.
+This branch contains the code for PrexSyn v0, which has been deprecated. We recommend using the latest version of PrexSyn for improved performance and features, with a more stable PrexSyn Engine v1 which is available through PyPI.
 
 ## Usage
 
