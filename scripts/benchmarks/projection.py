@@ -8,8 +8,7 @@ import torch
 from tqdm.auto import tqdm
 
 import prexsyn_engine
-from prexsyn.factory import get_detokenizer, load_model_and_config
-from prexsyn.shortcuts.projector import MoleculeProjector
+from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
 from prexsyn.utils.lmdb_dict import LmdbDict
 
 
@@ -80,16 +79,16 @@ def _run(
 
 @click.command()
 @click.option(
-    "--model",
-    "-m",
-    "model_path",
+    "--config",
+    "-c",
+    "config_path",
     type=click.Path(exists=True, path_type=pathlib.Path),
-    default="./data/trained_models/enamine2310_rxn115_202511.ckpt",
+    default="./data/trained_models/enamine2310_rxn115_202511.yml",
 )
 @click.option("--out", "output_dir", type=click.Path(path_type=pathlib.Path), default="./outputs/benchmarks/analog")
 @click.option("--num-runs", type=int, default=5)
 @click.option("--device", type=str, default="cuda")
-def main(model_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, device: str):
+def main(config_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, device: str):
     datasets = {
         "Enamine": pd.read_csv("data/benchmarks/enamine_real_1k.txt"),
         "ChEMBL": pd.read_csv("data/benchmarks/chembl_1k.txt"),
@@ -98,10 +97,9 @@ def main(model_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, devi
     output_dir.mkdir(parents=True, exist_ok=True)
 
     torch.set_grad_enabled(False)
-    model, config = load_model_and_config(model_path)
-    model = model.to(device).eval()
-
-    detokenizer = get_detokenizer(config)
+    loader = AllInOneLoader(config_path)
+    model = loader.model().to(device).eval()
+    detokenizer = loader.detokenizer()
 
     summary_list: list[pd.DataFrame] = []
 

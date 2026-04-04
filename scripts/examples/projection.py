@@ -3,40 +3,43 @@ import pathlib
 import click
 import torch
 
-from prexsyn.factory import get_chemical_space, get_detokenizer, load_model_and_config
-from prexsyn.shortcuts.projector import MoleculeProjector
+from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
 from prexsyn.utils.draw import SynthesisDrawer
 
 
 @click.command()
 @click.option(
-    "--model",
-    "-m",
-    "model_path",
+    "--config",
+    "-c",
+    "config_path",
     type=click.Path(exists=True, path_type=pathlib.Path),
-    default="./data/trained_models/enamine2310_rxn115_202511.ckpt",
+    default="./data/trained_models/enamine2310_rxn115_202511.yml",
 )
 @click.option("--smiles", type=str, required=True)
 @click.option("--draw-output-dir", "-o", type=click.Path(path_type=pathlib.Path), default=None)
 @click.option("--top", type=int, default=10)
 @click.option("--num-samples", type=int, default=64)
+@click.option("--device", type=str, default="cuda")
 def main(
-    model_path: pathlib.Path,
+    config_path: pathlib.Path,
     smiles: str,
     draw_output_dir: pathlib.Path | None,
     top: int,
     num_samples: int,
+    device: str,
 ):
     torch.set_grad_enabled(False)
     if draw_output_dir is not None:
         draw_output_dir.mkdir(parents=True, exist_ok=True)
 
-    model, config = load_model_and_config(model_path)
-    cs = get_chemical_space(config.chemical_space)
+    loader = AllInOneLoader(config_path)
+    cs = loader.chemical_space()
+    model = loader.model().to(device).eval()
+    detokenizer = loader.detokenizer()
 
     projector = MoleculeProjector(
         model=model,
-        detokenizer=get_detokenizer(config, chemspace=cs),
+        detokenizer=detokenizer,
         descriptor="ecfp4",
         num_samples=num_samples,
     )
@@ -51,7 +54,7 @@ def main(
             img = draw.draw(item.synthesis, cs)
             img.save(draw_output_dir / f"synthesis_{i}_sim{item.similarity:.4f}.png")
             img.close()
-        print(f"Sample {i}: similarity={item.similarity:.4f}, product={item.synthesis.products()[0].smiles()}")
+        print(f"Sample {i}: similarity={item.similarity:.4f}, product={item.molecule.smiles()}")
 
 
 if __name__ == "__main__":

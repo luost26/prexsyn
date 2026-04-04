@@ -126,12 +126,7 @@ def get_detokenizer(
     )
 
 
-def load_model_and_config(model_path: Path) -> tuple[PrexSyn, Config]:
-    conf_path = model_path.with_suffix(".yml")
-    if not conf_path.exists():
-        raise FileNotFoundError(f"Config file not found for model at {model_path}, expected at {conf_path}")
-
-    config = Config.from_yaml(conf_path)
+def load_model(config: Config, checkpoint_path: Path) -> PrexSyn:
     model = get_model(config)
-    model.load_state_dict(torch.load(model_path, map_location="cpu"))
-    return model, config
+    model.load_state_dict(torch.load(checkpoint_path, map_location="cpu"))
+    return model
