@@ -67,12 +67,14 @@ class RemoteConfig:
 
 @dataclass
 class Note:
-    name: str = ""
+    version: int
+    name: str
     description: str = ""
 
 
 @dataclass
 class Config:
+    note: Note
     chemical_space: ChemicalSpaceConfig
     descriptors: list[DescriptorConfig]
     featurizer: FeaturizerConfig
@@ -80,7 +82,6 @@ class Config:
     training: TrainingConfig
 
     remote: RemoteConfig = field(default_factory=RemoteConfig)
-    note: Note = field(default_factory=Note)
 
     @staticmethod
     def from_yaml(path: Path):

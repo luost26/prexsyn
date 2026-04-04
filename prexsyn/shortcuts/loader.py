@@ -12,12 +12,27 @@ class AllInOneLoader:
         is_remote = path_str.startswith("http://") or path_str.startswith("https://")
         if is_remote:
             base_name = Path(path_str).name
-            local_config_path = Path("./data/trained_models") / base_name
+            local_config_path = Path("./data/trained_models/remote") / base_name
             local_config_path.parent.mkdir(parents=True, exist_ok=True)
             download(path_str, config_path, desc="Downloading config")
             config_path = local_config_path
         self._config_path = Path(config_path)
         self._config = Config.from_yaml(self._config_path)
+        self._ckpt_path = self._config_path.with_suffix(".ckpt")
+        self._cs_path = self._config.chemical_space.cache_path
+
+        self.print_info()
+
+    def print_info(self):
+        print("[PrexSyn All-in-One Loader]")
+        print(f"- Model name: {self._config.note.name}")
+        print(f"- Config path: {self._config_path}")
+        print(f"- Checkpoint path: {self._ckpt_path}")
+        print(f"- Chemspace path: {self._cs_path}")
+        print("- Description:")
+        for line in self._config.note.description.splitlines():
+            print(f"  > {line}")
+        print("")
 
     def config(self):
         return self._config
@@ -27,7 +42,7 @@ class AllInOneLoader:
 
     @functools.cache
     def model(self):
-        ckpt_path = self._config_path.with_suffix(".ckpt")
+        ckpt_path = self._ckpt_path
 
         remote_conf = self._config.remote
         if not ckpt_path.exists():
@@ -40,7 +55,7 @@ class AllInOneLoader:
 
     @functools.cache
     def chemical_space(self):
-        cs_path = self._config.chemical_space.cache_path
+        cs_path = self._cs_path
 
         if not cs_path.exists():
             cs_url = self._config.remote.chemical_space_url

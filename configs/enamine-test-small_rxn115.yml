@@ -1,3 +1,7 @@
+note:
+  version: 1
+  name: Test config
+
 chemical_space:
   cache_path: data/chemical_spaces/enamine-test-small_rxn115.chemspace
   bb_path: data/building_blocks/enamine-test-small.sdf

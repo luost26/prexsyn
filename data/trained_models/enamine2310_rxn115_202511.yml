@@ -4,6 +4,11 @@ note:
   description: |
     Enamine Rush Delivery Building Blocks (US) Oct 2023, initially used in ChemProjector model.
     Rxn115 (115 reactions) template set.
+    Model released in November 2025. This is the model used in the paper.
+
+remote:
+  checkpoint_url: https://huggingface.co/datasets/luost26/prexsyn-data/resolve/main/trained_models/enamine2310_rxn115_202511.ckpt
+  chemical_space_url: https://huggingface.co/datasets/luost26/prexsyn-data/resolve/main/chemical_spaces/enamine2310_rxn115.chemspace
 
 chemical_space:
   cache_path: data/chemical_spaces/enamine2310_rxn115.chemspace
