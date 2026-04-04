@@ -14,6 +14,3 @@ def download(remote: str, local: str | pathlib.Path, desc: str = "Downloading") 
             for data in response.iter_content(block_size):
                 pbar.update(len(data))
                 file.write(data)
-
-    if total_size != 0 and pbar.n != total_size:
-        raise RuntimeError(f"Failed to download file from: {remote}")

@@ -82,13 +82,12 @@ def _run(
     "--config",
     "-c",
     "config_path",
-    type=click.Path(exists=True, path_type=pathlib.Path),
     default="./data/trained_models/enamine2310_rxn115_202511.yml",
 )
 @click.option("--out", "output_dir", type=click.Path(path_type=pathlib.Path), default="./outputs/benchmarks/analog")
 @click.option("--num-runs", type=int, default=5)
 @click.option("--device", type=str, default="cuda")
-def main(config_path: pathlib.Path, output_dir: pathlib.Path, num_runs: int, device: str):
+def main(config_path: str, output_dir: pathlib.Path, num_runs: int, device: str):
     datasets = {
         "Enamine": pd.read_csv("data/benchmarks/enamine_real_1k.txt"),
         "ChEMBL": pd.read_csv("data/benchmarks/chembl_1k.txt"),

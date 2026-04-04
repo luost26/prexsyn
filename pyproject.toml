@@ -53,6 +53,7 @@ dev = [
     "mkdocs-awesome-nav",
     "build",
     "twine",
+    "huggingface_hub",
 ]
 
 [build-system]

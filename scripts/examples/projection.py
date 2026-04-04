@@ -12,7 +12,6 @@ from prexsyn.utils.draw import SynthesisDrawer
     "--config",
     "-c",
     "config_path",
-    type=click.Path(exists=True, path_type=pathlib.Path),
     default="./data/trained_models/enamine2310_rxn115_202511.yml",
 )
 @click.option("--smiles", type=str, required=True)
@@ -21,7 +20,7 @@ from prexsyn.utils.draw import SynthesisDrawer
 @click.option("--num-samples", type=int, default=64)
 @click.option("--device", type=str, default="cuda")
 def main(
-    config_path: pathlib.Path,
+    config_path: str,
     smiles: str,
     draw_output_dir: pathlib.Path | None,
     top: int,

@@ -14,7 +14,7 @@ class AllInOneLoader:
             base_name = Path(path_str).name
             local_config_path = Path("./data/trained_models/remote") / base_name
             local_config_path.parent.mkdir(parents=True, exist_ok=True)
-            download(path_str, config_path, desc="Downloading config")
+            download(path_str, local_config_path, desc="Downloading config")
             config_path = local_config_path
         self._config_path = Path(config_path)
         self._config = Config.from_yaml(self._config_path)
