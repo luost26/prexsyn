@@ -3,7 +3,7 @@
 ![PrexSyn Overview](docs/imgs/overview.png)
 
 [![arXiv](https://img.shields.io/badge/arXiv-2512.00384-b31b1b.svg)](https://arxiv.org/abs/2512.00384)
-[![readthedocs](https://app.readthedocs.org/projects/prexsyn/badge/?version=latest)](https://prexsyn.readthedocs.io)
+[![readthedocs](https://app.readthedocs.org/projects/prexsyn/badge/?version=v0.1.0)](https://prexsyn.readthedocs.io/en/v0.1.0/)
 [![data](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Data-blue)](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 
 PrexSyn is an efficient, accurate, and programmable framework for exploring synthesizable chemical space. Please refer to our [paper](https://arxiv.org/abs/2512.00384) for more details.
@@ -18,11 +18,11 @@ If you need to use the legacy version of PrexSyn (v0), please switch to the [`de
 
 ## Usage
 
-Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
+Please refer to the [documentation](https://prexsyn.readthedocs.io/en/v0.1.0/) for detailed usage instructions on installation, data setup, reproducibility, and customization.
 
 ## Links
 
-- [Documentation](https://prexsyn.readthedocs.io)
+- [Documentation](https://prexsyn.readthedocs.io/en/v0.1.0/)
 - [Paper](https://arxiv.org/abs/2512.00384)
 - [Data and Weights](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 - [PrexSyn Engine](https://github.com/luost26/prexsyn-engine)
