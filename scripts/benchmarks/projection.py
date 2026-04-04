@@ -51,7 +51,7 @@ def _run(
                     continue
             else:
                 try:
-                    result = projector(smi)
+                    result = projector.one(smi)
                 except prexsyn_engine.chemistry.MoleculeError:
                     print(f"Error processing SMILES: {smi}, skipping.")
                     db[key_metric] = None

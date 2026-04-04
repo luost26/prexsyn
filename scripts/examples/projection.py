@@ -43,8 +43,8 @@ def main(
 
     draw = SynthesisDrawer()
 
-    result = projector(smiles)
-    for i, item in enumerate(result.results):
+    result = projector.one(smiles)
+    for i, item in enumerate(result.items):
         if i >= top:
             break
         if draw_output_dir is not None:
