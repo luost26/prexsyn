@@ -93,7 +93,7 @@ class SynthesisDrawer:
     def node_id_from_mol(self, mol: Molecule) -> str:
         return hashlib.md5(mol.smiles().encode()).hexdigest()
 
-    def draw(self, syn: Synthesis, cs: ChemicalSpace, pdf_output: Path | None = None) -> PIL.Image.Image:
+    def draw(self, syn: Synthesis, pdf_output: Path | None = None) -> PIL.Image.Image:
         P = pydot.Dot(
             "",
             graph_type="digraph",
@@ -104,6 +104,7 @@ class SynthesisDrawer:
             bgcolor=self.bgcolor,
             nodesep=0.02,
         )
+        cs = syn.chemical_space()
 
         leaf_nodes: list[pydot.Node | None] = []
         pfn = syn.postfix_notation().tokens()

@@ -117,7 +117,7 @@ class PrexSynWrapper(L.LightningModule):
             with SynthesisDrawer() as drawer:
                 drawer.bgcolor = "white"
                 images = [
-                    make_grid([drawer.draw(syn_true, self.chemical_space), drawer.draw(syn_pred, self.chemical_space)])
+                    make_grid([drawer.draw(syn_true), drawer.draw(syn_pred)])
                     for syn_true, syn_pred in zip(syn_true_list[:50], syn_pred_list[:50])
                 ]
                 self.logger.log_image(
