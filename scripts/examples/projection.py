@@ -34,7 +34,6 @@ def main(
         draw_output_dir.mkdir(parents=True, exist_ok=True)
 
     loader = AllInOneLoader(config_path)
-    cs = loader.chemical_space()
     model = loader.model().to(device).eval()
     detokenizer = loader.detokenizer()
 

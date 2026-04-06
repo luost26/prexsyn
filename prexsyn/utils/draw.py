@@ -12,7 +12,7 @@ from rdkit.Chem import Draw
 from rdkit.Chem.rdDepictor import Compute2DCoords
 
 from prexsyn_engine.chemistry import Molecule, SynthesisNode
-from prexsyn_engine.chemspace import ChemicalSpace, PostfixNotationTokenType, Synthesis
+from prexsyn_engine.chemspace import PostfixNotationTokenType, Synthesis
 
 
 def draw_molecule(mol: Molecule) -> PIL.Image.Image:
