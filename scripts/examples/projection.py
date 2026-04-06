@@ -60,7 +60,7 @@ def main(
         print(yaml.dump([out_dict], sort_keys=False))
 
         if draw_output_dir is not None:
-            img = draw.draw(item.synthesis)
+            img = draw.draw(item.synthesis, highlight_smiles=item.molecule.smiles())
             img.save(draw_output_dir / f"synthesis_{i}_sim{item.similarity:.4f}.png")
             img.close()
 

@@ -22,10 +22,10 @@ def main(config_path: Path, output_dir: Path, num_samples: int):
     detok = detokenizer(batch["synthesis"])
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    with SynthesisDrawer() as drawer:
-        for i, syn in enumerate(tqdm(detok, desc="Drawing syntheses")):
-            img = drawer.draw(syn)
-            img.save(output_dir / f"synthesis_{i}.png")
+    drawer = SynthesisDrawer()
+    for i, syn in enumerate(tqdm(detok, desc="Drawing syntheses")):
+        img = drawer.draw(syn)
+        img.save(output_dir / f"synthesis_{i}.png")
 
 
 if __name__ == "__main__":

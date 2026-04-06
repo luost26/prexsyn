@@ -2,6 +2,7 @@ import hashlib
 import io
 import math
 import tempfile
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, cast
 
@@ -11,8 +12,10 @@ import rdkit.Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.rdDepictor import Compute2DCoords
 
-from prexsyn_engine.chemistry import Molecule, SynthesisNode
-from prexsyn_engine.chemspace import PostfixNotationTokenType, Synthesis
+from prexsyn_engine.chemistry import Molecule
+from prexsyn_engine.chemspace import Synthesis
+
+from .syndag import SynDAG
 
 
 def draw_molecule(mol: Molecule) -> PIL.Image.Image:
@@ -54,22 +57,21 @@ class SynthesisDrawer:
         self.dpi = 200
         self.bgcolor = "transparent"
 
-        self.working_dir_handle = tempfile.TemporaryDirectory()
-        self.working_dir = Path(self.working_dir_handle.name)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.working_dir_handle.cleanup()
-
-    def mol_node(self, node_id: str, mol: Molecule, annots: list[tuple[str, Any] | str]) -> pydot.Node:
-        im_path = self.working_dir / f"{node_id}.png"
+    def mol_node(
+        self,
+        node_id: str,
+        mol: Molecule,
+        annots: Sequence[tuple[str, Any] | str],
+        working_dir: Path,
+        highlight: bool = False,
+    ) -> pydot.Node:
+        im_path = working_dir / f"{node_id}.png"
         draw_molecule(mol).save(im_path)
         label_lines = ["<"]
 
+        border = 2 if highlight else 0
         label_lines += [
-            '<TABLE STYLE="ROUNDED" BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="0" BGCOLOR="grey97">',
+            f'<TABLE STYLE="ROUNDED" BORDER="{border}" CELLBORDER="0" CELLSPACING="5" CELLPADDING="0" BGCOLOR="grey97">',
             '<TR><TD><IMG SRC="' + im_path.as_posix() + '"/></TD></TR>',
         ]
         for line in annots:
@@ -93,82 +95,53 @@ class SynthesisDrawer:
     def node_id_from_mol(self, mol: Molecule) -> str:
         return hashlib.md5(mol.smiles().encode()).hexdigest()
 
-    def draw(self, syn: Synthesis, pdf_output: Path | None = None) -> PIL.Image.Image:
-        P = pydot.Dot(
-            "",
-            graph_type="digraph",
-            rankdir=self.rankdir,
-            fontname=self.fontname,
-            fontsize=8,
-            dpi=self.dpi,
-            bgcolor=self.bgcolor,
-            nodesep=0.02,
-        )
-        cs = syn.chemical_space()
+    def draw(
+        self,
+        syn: Synthesis,
+        pdf_output: Path | None = None,
+        highlight_smiles: str | None = None,
+    ) -> PIL.Image.Image:
+        with tempfile.TemporaryDirectory() as working_dir_str:
+            working_dir = Path(working_dir_str)
+            P = pydot.Dot(
+                "",
+                graph_type="digraph",
+                rankdir=self.rankdir,
+                fontname=self.fontname,
+                fontsize=8,
+                dpi=self.dpi,
+                bgcolor=self.bgcolor,
+                nodesep=0.02,
+            )
 
-        leaf_nodes: list[pydot.Node | None] = []
-        pfn = syn.postfix_notation().tokens()
-        for i, token in enumerate(pfn):
-            if token.type == PostfixNotationTokenType.BuildingBlock:
-                bb = cs.bb_lib()[token.index]
-                leaf_nodes.append(self.mol_node(f"bb_{i}", bb.molecule, [bb.identifier]))
-            else:
-                leaf_nodes.append(None)
+            dag = SynDAG(syn)
 
-        csyn = syn.synthesis()
+            for node in dag.nodes.values():
+                annots: list[str] = []
+                if node.building_block is not None:
+                    annots.append(node.building_block.identifier)
+                if node.reaction is not None:
+                    annots.append(node.reaction.name)
+                highlight = node.mol.smiles() == highlight_smiles
+                P.add_node(self.mol_node(node.key, node.mol, annots, working_dir, highlight))
 
-        queue: list[SynthesisNode] = []
-        for i in range(csyn.stack_size()):
-            queue.append(csyn.stack_top(i))
-
-        nodes: dict[str, pydot.Node] = {}
-        edges: set[tuple[str, str, str]] = set()
-
-        while len(queue) > 0:
-            snode = queue.pop(0)
-            pfn_node = leaf_nodes[snode.index()]
-            if pfn_node is not None:
-                node_id = self.node_id_from_mol(snode.at(0))
-                nodes[node_id] = pfn_node
-            else:
-                rxn_token = pfn[snode.index()]
-                rxn = cs.rxn_lib()[rxn_token.index]
-                for product_idx in range(snode.size()):
-                    product_mol = snode.at(product_idx)
-                    node_id = self.node_id_from_mol(product_mol)
-                    nodes[node_id] = self.mol_node(f"product_{node_id}", product_mol, [rxn.name])
-
-                    precursors = snode.precursors(product_idx)
-                    for precursor in precursors:
-                        edges.add(
-                            (
-                                self.node_id_from_mol(precursor.molecule),
-                                node_id,
-                                precursor.reactant_name,
+            for node in dag.nodes.values():
+                for prec_dict in node.precursors:
+                    for reactant_name, prec_key in prec_dict.items():
+                        P.add_edge(
+                            pydot.Edge(
+                                P.get_node(prec_key)[0],
+                                P.get_node(node.key)[0],
+                                label=reactant_name,
+                                fontsize=8,
+                                fontname=self.fontname,
                             )
                         )
 
-                for pre_node in snode.precursor_nodes():
-                    queue.append(pre_node)
+            if pdf_output is not None:
+                P.write_pdf(pdf_output)  # type: ignore[attr-defined]
 
-        for node in nodes.values():
-            P.add_node(node)
-
-        for src_id, dst_id, label in edges:
-            P.add_edge(
-                pydot.Edge(
-                    nodes[src_id],
-                    nodes[dst_id],
-                    label=label,
-                    fontsize=8,
-                    fontname=self.fontname,
-                )
-            )
-
-        if pdf_output is not None:
-            P.write_pdf(pdf_output)  # type: ignore[attr-defined]
-
-        return PIL.Image.open(io.BytesIO(P.create_png()))  # type: ignore[attr-defined]
+            return PIL.Image.open(io.BytesIO(P.create_png()))  # type: ignore[attr-defined]
 
 
 def make_grid(images: list[PIL.Image.Image]) -> PIL.Image.Image:
