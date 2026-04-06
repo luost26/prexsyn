@@ -17,6 +17,19 @@ from prexsyn_engine.detokenizer import MultiThreadedDetokenizer
 
 
 @dataclass(frozen=True)
+class _Time:
+    model: float
+    detok: float
+
+    @property
+    def total(self) -> float:
+        return self.model + self.detok
+
+    def __truediv__(self, divisor: float | int):
+        return _Time(model=self.model / divisor, detok=self.detok / divisor)
+
+
+@dataclass(frozen=True)
 class _ResultItem:
     molecule: Molecule
     synthesis: Synthesis
@@ -29,7 +42,7 @@ class _ResultItem:
 @dataclass
 class _Result:
     items: list[_ResultItem]
-    time: float
+    time: _Time
 
     def __len__(self):
         return len(self.items)
@@ -50,7 +63,7 @@ class _Result:
 @dataclass
 class _BatchedResult:
     results: list[_Result]
-    time: float
+    time: _Time
 
     @overload
     def __getitem__(self, index: int) -> _Result: ...
@@ -103,7 +116,7 @@ class MoleculeProjector:
         self,
         syn_out: list[Synthesis],
         in_desc: np.ndarray,
-        total_time: float,
+        time_stat: _Time,
     ):
         results_2d = [syn_out[i : i + self.num_samples] for i in range(0, len(syn_out), self.num_samples)]
         batched_items: list[_Result] = []
@@ -121,25 +134,26 @@ class MoleculeProjector:
             order = sims.argsort()[::-1]
 
             items = [_ResultItem(prods_all[i], syns[mol_syn_index[i]], float(sims[i])) for i in order]
-            batched_items.append(_Result(items=items, time=total_time / len(results_2d)))
+            batched_items.append(_Result(items=items, time=time_stat / len(results_2d)))
 
-        return _BatchedResult(results=batched_items, time=total_time)
+        return _BatchedResult(results=batched_items, time=time_stat)
 
     def one(self, mol: Molecule | str | rdkit.Chem.Mol) -> _Result:
         return self.many([mol]).results[0]
 
     def many(self, mols: Sequence[Molecule | str | rdkit.Chem.Mol]) -> _BatchedResult:
-        t_start = time.perf_counter()
-
+        t_0 = time.perf_counter()
         mols_converted = self._convert_molecules(mols)
         in_desc = self._compute_descriptors(mols_converted)  # (n, desc_dim)
         in_desc_torch = torch.from_numpy(in_desc).to(dtype=self.model.dtype, device=self.model.device)
-        results = self.sampler.sample((self.descriptor_name, in_desc_torch)).detokenize(self.detokenizer)
+        samples = self.sampler.sample((self.descriptor_name, in_desc_torch))
 
-        t_end = time.perf_counter()
-        total_time = t_end - t_start
+        t_1 = time.perf_counter()
+        results = samples.detokenize(self.detokenizer)
 
-        return self._aggregate_results(results, in_desc, total_time)
+        t_2 = time.perf_counter()
+
+        return self._aggregate_results(results, in_desc, _Time(model=t_1 - t_0, detok=t_2 - t_1))
 
     def desc(self, in_descs: torch.Tensor | np.ndarray) -> _BatchedResult:
         if isinstance(in_descs, torch.Tensor):
@@ -152,10 +166,12 @@ class MoleculeProjector:
         if in_descs_np.ndim != 2:
             raise ValueError(f"Expected shape (bsz, desc_dim), got {in_descs_np.shape}")
 
-        t_start = time.perf_counter()
-        results = self.sampler.sample((self.descriptor_name, in_descs_torch)).detokenize(self.detokenizer)
+        t_0 = time.perf_counter()
+        samples = self.sampler.sample((self.descriptor_name, in_descs_torch))
 
-        t_end = time.perf_counter()
-        total_time = t_end - t_start
+        t_1 = time.perf_counter()
+        results = samples.detokenize(self.detokenizer)
 
-        return self._aggregate_results(results, in_descs_np, total_time)
+        t_2 = time.perf_counter()
+
+        return self._aggregate_results(results, in_descs_np, _Time(model=t_1 - t_0, detok=t_2 - t_1))

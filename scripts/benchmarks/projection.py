@@ -39,6 +39,18 @@ def _run(
             times.append(result["time"])
         return sum(times) / len(times)
 
+    def _average_time_model():
+        times = []
+        for result in summary:
+            times.append(result["time_model"])
+        return sum(times) / len(times)
+
+    def _average_time_detok():
+        times = []
+        for result in summary:
+            times.append(result["time_detok"])
+        return sum(times) / len(times)
+
     with LmdbDict(output_path) as db:
         pbar = tqdm(total=len(smi_list))
         for i, smi in enumerate(smi_list):
@@ -59,7 +71,9 @@ def _run(
                 row = {
                     "smiles": smi,
                     "similarity": result.best_similarity(),
-                    "time": result.time,
+                    "time": result.time.total,
+                    "time_model": result.time.model,
+                    "time_detok": result.time.detok,
                 }
                 db[key_metric] = row
 
@@ -70,7 +84,9 @@ def _run(
                     "count": len(summary),
                     "avg_sim": _average_sim(),
                     "recons": f"{_recons_rate() * 100:.2f}%",
-                    "avg_time": f"{_average_time():.2f}s",
+                    "avg_t": f"{_average_time():.2f}s",
+                    "t_model": f"{_average_time_model():.2f}s",
+                    "t_detok": f"{_average_time_detok():.2f}s",
                 }
             )
 
