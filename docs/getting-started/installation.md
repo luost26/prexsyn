@@ -5,62 +5,28 @@
 
 ```bash
 git clone https://github.com/luost26/prexsyn.git
-cd PrexSyn
+cd prexsyn
 ```
 
-## Pixi (Recommended)
+## UV (Recommended)
 
-[Pixi](https://pixi.sh/) is highly recommended for managing PrexSyn environments. We used pixi for development. 
+[UV](https://docs.astral.sh/uv/) is a modern and fast Python environment manager. We highly recommend using UV for managing PrexSyn environments.
 
-Pixi is a conda-based environment manager. It creates environments on a per-project basis, so you don't need to worry about conflicts with your existing conda/mamba installations.
-
-To get started, please install Pixi by following the instructions on the [Pixi documentation](https://pixi.sh/latest/installation/).
-
-Now, you are all set! To activate the environment, simply run the following command in the root directory of the project (it may take a while for the first time):
+With UV, You don't need to explicitly create a virtual environment. Simply run any uv command in the PrexSyn directory, and UV will automatically create and manage an isolated environment for you according to the `pyproject.toml` and `uv.lock` files, for example:
 
 ```bash
-pixi shell
+uv run python
 ```
 
-## Conda/Mamba + PyPI
+This will start a Python interpreter with the PrexSyn environment activated. You can try importing PrexSyn to verify the installation:
 
-Create and activate conda (mamba) environment:
-
-```bash
-conda create -n prexsyn
-conda activate prexsyn
+```python
+import prexsyn
+import prexsyn_engine
 ```
 
-Install [PrexSyn Engine](https://github.com/luost26/prexsyn-engine). This package is only available via conda for now. RDKit will be installed as a dependency in this step.
+## Changing PyTorch CUDA Version
 
-```bash
-conda install conda-forge::prexsyn-engine
-```
+By default, UV installs the latest PyTorch version (probably) with the latest CUDA version. Some users may want to use a different CUDA version for compatibility with their hardware or other software.
 
-Setup PrexSyn package. PyTorch and other dependencies will be installed in this step.
-
-If you want to reproduce the results in the paper, please use the `eval` extra to install additional dependencies for GuacaMol, sEH proxy, and docking:
-
-```bash
-pip install -e .[eval]
-```
-
-If you want to just install the base package without any extra dependencies, run:
-
-```bash
-pip install -e .
-```
-
-If you want to install development tools as well, please use the `dev` extra:
-
-```bash
-pip install -e .[dev]
-```
-
-Below is a summary of the available extras:
-
-
-| Extra  | Description                                                  |
-| ------ | ------------------------------------------------------------ |
-| `eval` | Dependencies for running GuacaMol, sEH, and docking molecular sampling benchmarks. |
-| `dev`  | Development tools including linters, pytest, jupyter, and mkdocs. |
+In such cases, please refer to the UV documentation for instructions on how to change the PyTorch CUDA version in your UV environment by editing the `pyproject.toml` file: [https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index](https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index)

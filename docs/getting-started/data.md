@@ -2,52 +2,55 @@
 
 ## Automatic Download
 
-PrexSyn can automatically download the preprocessed chemical space data and trained model weights upon first use.
+PrexSyn will automatically download the preprocessed chemical space data and trained model checkpoints upon first use.
 
 You can trigger the download by running the following example:
 
 ```bash
-python scripts/examples/projection.py --smiles "COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1"
+uv run python scripts/examples/projection.py --smiles "COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1"
 ```
 
 The output should look like this:
 
 ```
-[load_model] Model checkpoint not found locally at data/trained_models/v1_converted.ckpt, trying to download from https://huggingface.co/datasets/luost26/prexsyn-data/resolve/main/trained_models/v1_converted.ckpt...
-Downloading: 100%|██████████████████████████| 2.36G/2.36G [00:04<00:00, 545MB/s]
-[load_model] Chemical space data not found locally at data/chemical_spaces/enamine_rxn115, trying to download from https://huggingface.co/datasets/luost26/prexsyn-data/resolve/main/chemical_spaces...
-Downloading primary_building_blocks: 100%|████| 326M/326M [00:00<00:00, 522MB/s]
-Downloading primary_index: 100%|████████████| 36.1M/36.1M [00:00<00:00, 497MB/s]
-Downloading reactions: 100%|█████████████████| 374k/374k [00:00<00:00, 85.6MB/s]
-Downloading secondary_building_blocks: 100%|█| 1.44G/1.44G [00:02<00:00, 545MB/s
-Downloading secondary_index: 100%|██████████| 32.4M/32.4M [00:00<00:00, 402MB/s]
-[2025-12-02 10:56:20.399] [prexsyn_engine] [info] Loading building blocks from cache: data/chemical_spaces/enamine_rxn115/primary_building_blocks
-[2025-12-02 10:56:23.609] [prexsyn_engine] [info] BuildingBlockList: 223243 building blocks loaded from cache
-[2025-12-02 10:56:43.437] [prexsyn_engine] [info] ReactionList: Loading reactions from cache data/chemical_spaces/enamine_rxn115/reactions
-[2025-12-02 10:56:43.446] [prexsyn_engine] [info] ReactionList: Loaded 115 reactions
-Input: COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
-Target (Canonical SMILES): COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
-Results:
-- SMILES: COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
-  Similarity: 1.0000
-  Synthesis:
-  - Reaction Index: 103
-    Possible Products:
-    - COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
-    Reactants:
-    - SMILES: COc1ccc(-c2ccnc(Cl)n2)cc1
-      Building Block Index: 198209
-      ID: EN300-249263
-    - SMILES: Nc1ccccc1
-      Building Block Index: 95219
-      ID: EN300-29997
+[PrexSyn All-in-One Loader]
+- Model name: Enamine US Oct 2023 + Rxn115
+- Config path: data/trained_models/enamine2310_rxn115_202511.yml
+- Checkpoint path: data/trained_models/enamine2310_rxn115_202511.ckpt
+- Chemspace path: data/chemical_spaces/enamine2310_rxn115.chemspace
+- Description:
+  > Enamine Rush Delivery Building Blocks (US) Oct 2023, initially used in ChemProjector model.
+  > Rxn115 (115 reactions) template set.
+  > Model released in November 2025. This is the model used in the paper.
+
+Downloading chemical space: 100%|███████████| 1.08G/1.08G [00:01<00:00, 896MB/s]
+Downloading checkpoint: 100%|███████████████| 2.29G/2.29G [00:02<00:00, 773MB/s]
+[2026-04-07 10:11:07.517] [prexsyn] [info] Deserializing chemical space...
+[2026-04-07 10:11:07.517] [prexsyn] [info]  - Serialization version: 1
+[2026-04-07 10:11:07.517] [prexsyn] [info]  - Sizes: 223243 building blocks, 115 reactions, 349117 intermediates
+[2026-04-07 10:11:30.750] [prexsyn] [info]  - Building block library deserialized. Size: 223243
+[2026-04-07 10:11:30.759] [prexsyn] [info]  - Reaction library deserialized. Size: 115
+[2026-04-07 10:12:06.338] [prexsyn] [info]  - Intermediate library deserialized. Size: 349117
+[2026-04-07 10:12:06.448] [prexsyn] [info]  - Reactant-building block mapping deserialized. Matches: 4509428
+[2026-04-07 10:12:06.617] [prexsyn] [info]  - Reactant-intermediate mapping deserialized. Matches: 8821093
+- Target: COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
+  Similarity: 1.0
+  SMILES: COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1
+  Reaction: RXN_104
+  Precursors:
+  - R0:
+      SMILES: Brc1ccccc1
+      BuildingBlock: EN300-19359
+    R1:
+      SMILES: COc1ccc(-c2ccnc(N)n2)cc1
+      BuildingBlock: EN300-186470
 
 ...
 ```
 
 
-## Manual Download
+## Manual Download (Not Recommended)
 
-Our preprocessed chemical space data and trained model weights are hosted on Hugging Face: [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main).
+The preprocessed chemical space data and trained model checkpoints are hosted on Hugging Face: [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main). You can download them manually and place them in the [`data/`](https://github.com/luost26/prexsyn/tree/main/data) directory of the project.
 
-You can download them manually and place them in the [`data/`](https://github.com/luost26/prexsyn/tree/main/data) directory of the project.
+This is **not recommended** since the data repository contains old versions of the data and checkpoint files that are no longer used by the current codebase. The automatic download mechanism will ensure that you get the correct and up-to-date files.
