@@ -16,16 +16,25 @@ The work is expected to be completed in the next few days. Please stay tuned!
 
 If you need to use the legacy version of PrexSyn (v0), please switch to the [`dev-v0`](https://github.com/luost26/prexsyn/tree/dev-v0) branch.
 
+## Capabilities
+
+| Capability | Input | Output |
+| :---: | :---: | :---: |
+| **Chemical space projection** | ![](docs/imgs/proj-in.png) <br/> Graph / SMILES | ![](docs/imgs/proj-out.png) <br/> |
+| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) <br/> Fingerprint / descriptor | ![](docs/imgs/proj-out.png) <br/>  |
+| **Molecular sampling** | ![](docs/imgs/sample-in.png) <br/> Scoring functions | ![](docs/imgs/sample-out.png) <br/> |
+
+
 ## Usage
 
 Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
 
 ## Links
 
-- [Documentation](https://prexsyn.readthedocs.io)
-- [Paper](https://arxiv.org/abs/2512.00384)
-- [Data and Weights](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
-- [PrexSyn Engine](https://github.com/luost26/prexsyn-engine)
+[[Documentation](https://prexsyn.readthedocs.io)]
+[[Paper](https://arxiv.org/abs/2512.00384)]
+[[Data and Weights](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)]
+[[PrexSyn Engine](https://github.com/luost26/prexsyn-engine)]
 
 ## Citation
 
