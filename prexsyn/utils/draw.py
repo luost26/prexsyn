@@ -1,4 +1,3 @@
-import hashlib
 import io
 import math
 import tempfile
@@ -92,15 +91,20 @@ class SynthesisDraw:
             fontname=self.fontname,
         )
 
-    def node_id_from_mol(self, mol: Molecule) -> str:
-        return hashlib.md5(mol.smiles().encode()).hexdigest()
-
     def draw(
         self,
         syn: Synthesis,
         pdf_output: Path | None = None,
         highlight_smiles: str | None = None,
     ) -> PIL.Image.Image:
+        node_key_to_id: dict[str, str] = {}
+
+        def _get_node_id(node_key: str) -> str:
+            if node_key not in node_key_to_id:
+                node_id = f"{len(node_key_to_id)}"
+                node_key_to_id[node_key] = node_id
+            return node_key_to_id[node_key]
+
         with tempfile.TemporaryDirectory() as working_dir_str:
             working_dir = Path(working_dir_str)
             P = pydot.Dot(
@@ -123,15 +127,15 @@ class SynthesisDraw:
                 if node.reaction is not None:
                     annots.append(node.reaction.name)
                 highlight = node.mol.smiles() == highlight_smiles
-                P.add_node(self.mol_node(node.key, node.mol, annots, working_dir, highlight))
+                P.add_node(self.mol_node(_get_node_id(node.key), node.mol, annots, working_dir, highlight))
 
             for node in dag.nodes.values():
                 for prec_dict in node.precursors:
                     for reactant_name, prec_key in prec_dict.items():
                         P.add_edge(
                             pydot.Edge(
-                                P.get_node(prec_key)[0],
-                                P.get_node(node.key)[0],
+                                P.get_node(_get_node_id(prec_key))[0],
+                                P.get_node(_get_node_id(node.key))[0],
                                 label=reactant_name,
                                 fontsize=8,
                                 fontname=self.fontname,
