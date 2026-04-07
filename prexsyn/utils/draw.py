@@ -15,7 +15,7 @@ from rdkit.Chem.rdDepictor import Compute2DCoords
 from prexsyn_engine.chemistry import Molecule
 from prexsyn_engine.chemspace import Synthesis
 
-from .syndag import SynDAG
+from .syndag import SynthesisDAG
 
 
 def draw_molecule(mol: Molecule) -> PIL.Image.Image:
@@ -48,7 +48,7 @@ def draw_molecule(mol: Molecule) -> PIL.Image.Image:
     return PIL.Image.open(io.BytesIO(img_data))
 
 
-class SynthesisDrawer:
+class SynthesisDraw:
     def __init__(self):
         super().__init__()
         self.show_intermediate = False
@@ -114,7 +114,7 @@ class SynthesisDrawer:
                 nodesep=0.02,
             )
 
-            dag = SynDAG(syn)
+            dag = SynthesisDAG(syn)
 
             for node in dag.nodes.values():
                 annots: list[str] = []

@@ -4,7 +4,7 @@ import click
 from tqdm import tqdm
 
 from prexsyn.factory import Config, get_chemical_space, get_data_pipeline, get_detokenizer
-from prexsyn.utils.draw import SynthesisDrawer
+from prexsyn.utils.draw import SynthesisDraw
 
 
 @click.command()
@@ -22,7 +22,7 @@ def main(config_path: Path, output_dir: Path, num_samples: int):
     detok = detokenizer(batch["synthesis"])
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    drawer = SynthesisDrawer()
+    drawer = SynthesisDraw()
     for i, syn in enumerate(tqdm(detok, desc="Drawing syntheses")):
         img = drawer.draw(syn)
         img.save(output_dir / f"synthesis_{i}.png")

@@ -5,8 +5,8 @@ import torch
 import yaml
 
 from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
-from prexsyn.utils.draw import SynthesisDrawer
-from prexsyn.utils.syndag import SynDAG
+from prexsyn.utils.draw import SynthesisDraw
+from prexsyn.utils.syndag import SynthesisDAG
 
 
 @click.command()
@@ -44,14 +44,14 @@ def main(
         num_samples=num_samples,
     )
 
-    draw = SynthesisDrawer()
+    draw = SynthesisDraw()
 
     result = projector.one(smiles)
     for i, item in enumerate(result.items):
         if i >= top:
             break
 
-        dag = SynDAG(item.synthesis)
+        dag = SynthesisDAG(item.synthesis)
         out_dict: dict[str, object] = {
             "Target": smiles,
             "Similarity": item.similarity,

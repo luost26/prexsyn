@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 
 from prexsyn.factory import Config, get_chemical_space, get_descriptor_constructor, get_detokenizer, get_model
 from prexsyn.samplers.basic import BasicSampler
-from prexsyn.utils.draw import SynthesisDrawer, make_grid
+from prexsyn.utils.draw import SynthesisDraw, make_grid
 from prexsyn.utils.metrics import tanimoto_similarity
 
 from .data_module import SynthesisBatch
@@ -114,7 +114,7 @@ class PrexSynWrapper(L.LightningModule):
         self.log("val/success_rate", count_success / len(syn_pred_list), on_step=False, prog_bar=False, logger=True)
 
         if batch_idx == 0 and isinstance(self.logger, WandbLogger):
-            drawer = SynthesisDrawer()
+            drawer = SynthesisDraw()
             drawer.bgcolor = "white"
             images = [
                 make_grid([drawer.draw(syn_true), drawer.draw(syn_pred)])

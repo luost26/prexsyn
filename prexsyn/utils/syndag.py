@@ -14,7 +14,7 @@ _ReactantName: TypeAlias = str
 
 
 @dataclass
-class SynDAGNode:
+class _DAGNode:
     key: _KeyString
     mol: Molecule
     building_block: BuildingBlockItem | None = None
@@ -23,17 +23,17 @@ class SynDAGNode:
     successors: set[tuple[_ReactantName, _KeyString]] = field(default_factory=set)
 
 
-class SynDAG:
+class SynthesisDAG:
     def __init__(self, syn: Synthesis | None = None):
         super().__init__()
-        self.nodes: dict[str, SynDAGNode] = {}
+        self.nodes: dict[str, _DAGNode] = {}
         if syn is not None:
             self.build(syn)
 
-    def get_node(self, mol: Molecule) -> SynDAGNode:
+    def get_node(self, mol: Molecule) -> _DAGNode:
         node_key = mol.smiles()
         if node_key not in self.nodes:
-            self.nodes[node_key] = SynDAGNode(node_key, mol)
+            self.nodes[node_key] = _DAGNode(node_key, mol)
         return self.nodes[node_key]
 
     def build(self, syn: Synthesis):
