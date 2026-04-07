@@ -40,8 +40,19 @@ class AllInOneLoader:
     def config_path(self):
         return self._config_path
 
+    def ensure_chemical_space(self):
+        cs_path = self._cs_path
+        if not cs_path.exists():
+            cs_url = self._config.remote.chemical_space_url
+            if cs_url is not None:
+                download(cs_url, cs_path, desc="Downloading chemical space")
+            else:
+                raise FileNotFoundError(f"Chemical space not found at {cs_path} and no remote URL provided.")
+
     @functools.cache
     def model(self):
+        # The model peeks into chemical space to determine embedding layer size
+        self.ensure_chemical_space()
         ckpt_path = self._ckpt_path
 
         remote_conf = self._config.remote
@@ -55,15 +66,7 @@ class AllInOneLoader:
 
     @functools.cache
     def chemical_space(self):
-        cs_path = self._cs_path
-
-        if not cs_path.exists():
-            cs_url = self._config.remote.chemical_space_url
-            if cs_url is not None:
-                download(cs_url, cs_path, desc="Downloading chemical space")
-            else:
-                raise FileNotFoundError(f"Chemical space not found at {cs_path} and no remote URL provided.")
-
+        self.ensure_chemical_space()
         return get_chemical_space(self._config.chemical_space)
 
     @functools.cache
