@@ -30,8 +30,8 @@ If you need to use the legacy version of PrexSyn (v0), please switch to the [`de
 
 | Capability | Input | Output | Performance |
 | :---: | :---: | :---: | :---: |
-| **Chemical space projection** | ![](docs/imgs/proj-in.png) <br/> Graph / SMILES | ![](docs/imgs/proj-out.png) <br/> | ![](docs/imgs/projection-compare.png) |
-| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) <br/> Fingerprint / descriptor | ![](docs/imgs/proj-out.png) <br/>  |  |
+| **Chemical space projection** | ![](docs/imgs/proj-in.png) | ![](docs/imgs/proj-out.png) <br/> | ![](docs/imgs/projection-compare.png) |
+| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) | ![](docs/imgs/proj-out.png) <br/>  |  |
 | **Molecular sampling** | ![](docs/imgs/sample-in.png) <br/> Scoring functions | ![](docs/imgs/sample-out.png) <br/> | ![](docs/imgs/sampling-compare-1.png) |
 
 
