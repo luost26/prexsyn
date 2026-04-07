@@ -1,55 +1,31 @@
 # PrexSyn
 
-![PrexSyn Overview](imgs/overview.png)
-
 
 ## Introduction
 
 PrexSyn is an efficient, accurate, and programmable framework for synthesizable molecular design.
 It is based on a decoder-only transformer architecture that autoregressively generates *postfix notations of
-synthesis*[^chemprojector] (a molecular representation based on chemical reactions and purchasable building blocks) conditioned on molecular properties.
+synthesis*[^chemprojector] (a molecular representation based on chemical reactions and purchasable building blocks) conditioned on molecular descriptors.
 
 [^chemprojector]: Projecting Molecules into Synthesizable Chemical Spaces. [https://arxiv.org/abs/2406.04628](https://arxiv.org/abs/2406.04628)
 
-PrexSyn is trained on a billion-scale datastream of postfix notations paired with molecular properties using only two GPUs and 32 CPU cores in two days. This is made possible by [PrexSyn Engine](https://github.com/luost26/prexsyn-engine), a real-time, high-throughput C++-based data generation pipeline.
-
-![PrexSyn Framework](imgs/fig1.png)
-/// caption
-PrexSyn framework overview from the [paper](https://arxiv.org/abs/2512.00384).
-///
+PrexSyn is trained on a billion-scale datastream of postfix notations paired with molecular descriptors using only two GPUs and 32 CPU cores in two days. This is made possible by [PrexSyn Engine](https://github.com/luost26/prexsyn-engine), a real-time, high-throughput C++-based data generation pipeline.
 
 
 ## Capabilities
 
-### Chemical Space Projection
+| Capability | Input | Output |
+| :---: | :---: | :---: |
+| **Chemical space projection** | ![](imgs/proj-in.png) <br/> Graph / SMILES | ![](imgs/proj-out.png) <br/> |
+| **Fingerprint/descriptor based generation** | ![](imgs/fp-in.png) <br/> Fingerprint / descriptor | ![](imgs/proj-out.png) <br/>  |
+| **Molecular sampling** | ![](imgs/sample-in.png) <br/> Scoring functions | ![](imgs/sample-out.png) <br/> |
 
-Chemical space projection[^chemprojector] refers to finding synthesizable molecules similar to a given target molecule in the predefined chemical space.
+## Performance
 
-![Chemical Space Projection](imgs/projection-1.png){: width="300" }
-/// caption
-///
-
-PrexSyn can project molecules into synthesizable chemical spaces much more efficiently and accurately than prior methods.
-
-![Performance comparison](imgs/projection-compare.png){: width="500" }
-/// caption
-///
-
-We provide a quick demo of chemical space projection. You can find the instructions [here](getting-started/examples.md).
-
-### Molecular Sampling
-
-Given an oracle function (e.g. docking score, predicted bioactivity, etc.), PrexSyn can sample synthesizable molecules to maximize the oracle score. It starts with a random set of molecules and iteratively refines the property query to generate better molecules.
-
-![Molecular Sampling](imgs/sampling-1.png){: width="350" }
-/// caption
-///
-
-PrexSyn achieves higher sampling efficiency on the GuacaMol molecular optimization benchmark even compared to synthesis-agnostic baselines.
-
-![Molecular Sampling Performance](imgs/sampling-compare.png)
-
-You can find a quick demo of molecular sampling [here](getting-started/examples.md).
+| Capability |     Result      |
+| :--- | :------------: |
+| Record-high accuracy and speed in chemical space projection and fingerprint/descriptor-based generation | ![Performance comparison](imgs/projection-compare.png) |
+| Record-high sample efficiency in molecular sampling against scoring functions | ![Molecular Sampling Performance](imgs/sampling-compare-1.png) |
 
 
 ## Resources
