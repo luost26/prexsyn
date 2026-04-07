@@ -1,14 +1,14 @@
 
 # Installation
 
-## Clone the Repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/luost26/prexsyn.git
 cd prexsyn
 ```
 
-## UV (Recommended)
+## UV (recommended)
 
 [UV](https://docs.astral.sh/uv/) is a modern and fast Python environment manager. We highly recommend using UV for managing PrexSyn environments.
 
@@ -25,7 +25,7 @@ import prexsyn
 import prexsyn_engine
 ```
 
-## Changing PyTorch CUDA Version
+## Changing PyTorch CUDA version
 
 By default, UV installs the latest PyTorch version (probably) with the latest CUDA version. Some users may want to use a different CUDA version for compatibility with their hardware or other software.
 

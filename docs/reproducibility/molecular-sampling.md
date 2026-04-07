@@ -1,4 +1,4 @@
-# Molecular Sampling
+# Molecular sampling
 
 ## Prerequisite
 
@@ -16,7 +16,7 @@ If you installed the environment manually using conda/mamba and pypi, make sure 
 pip install -e .[eval]
 ```
 
-## GuacaMol Benchmark
+## GuacaMol benchmark
 
 To reproduce the results in Table 2 of [the PrexSyn paper](https://arxiv.org/abs/2512.00384), run the following benchmark script:
 
@@ -41,7 +41,7 @@ Oracle: amlodipine
 - AUC-Top10: 0.781 ± 0.023
 ```
 
-## sEH Proxy
+## sEH proxy
 
 Run the following command to reproduce the sEH proxy task results:
 

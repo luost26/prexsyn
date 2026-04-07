@@ -1,6 +1,6 @@
-# Data and Weights
+# Data and model weights
 
-## Automatic Download
+## Automatic download
 
 PrexSyn will automatically download the preprocessed chemical space data and trained model checkpoints upon first use.
 
@@ -49,7 +49,7 @@ Downloading checkpoint: 100%|███████████████| 2.29
 ```
 
 
-## Manual Download (Not Recommended)
+## Manual download (not recommended)
 
 The preprocessed chemical space data and trained model checkpoints are hosted on Hugging Face: [https://huggingface.co/datasets/luost26/prexsyn-data/tree/main](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main). You can download them manually and place them in the [`data/`](https://github.com/luost26/prexsyn/tree/main/data) directory of the project.
 

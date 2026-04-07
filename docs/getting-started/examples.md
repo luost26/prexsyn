@@ -1,6 +1,6 @@
-# Quick Examples
+# Quick examples
 
-## Chemical Space Projection
+## Chemical space projection
 
 An example script for chemical space projection is available at [`scripts/examples/projection.py`](https://github.com/luost26/prexsyn/blob/main/scripts/examples/projection.py).
 This script takes a SMILES string as input and generates synthesizable analogs. Top 10 results are displayed in YAML format, and optionally the synthesis pathways can be visualized as images.
@@ -60,6 +60,6 @@ This will save the synthesis pathway diagrams in the `./draw` directory.
 ![examples](./imgs/projection-example.png)
 
 
-## Molecular Sampling
+## Molecular sampling
 
 Coming soon...

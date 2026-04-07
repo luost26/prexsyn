@@ -1,3 +1,3 @@
-# Model Training
+# Model training
 
 Work in progress...

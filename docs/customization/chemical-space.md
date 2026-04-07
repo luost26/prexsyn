@@ -1,4 +1,4 @@
-# Defining Chemical Space
+# Defining chemical space
 
 **Work in progress...**
 

@@ -1,4 +1,4 @@
-# Training New Model
+# Training your own model
 
 **Work in progress...**
 

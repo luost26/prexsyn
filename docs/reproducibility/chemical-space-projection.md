@@ -1,4 +1,4 @@
-# Chemical Space Projection
+# Chemical space projection
 
 To reproduce the results in Table 1 of [the PrexSyn paper](https://arxiv.org/abs/2512.00384), run the following benchmark script:
 
