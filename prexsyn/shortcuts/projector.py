@@ -10,7 +10,9 @@ import torch
 from prexsyn.factory import get_descriptor_constructor
 from prexsyn.models import PrexSyn
 from prexsyn.samplers.basic import BasicSampler
+from prexsyn.utils.draw import SynthesisDraw
 from prexsyn.utils.metrics import tanimoto_similarity
+from prexsyn.utils.syndag import SynthesisDAG
 from prexsyn_engine.chemistry import Molecule
 from prexsyn_engine.chemspace import Synthesis
 from prexsyn_engine.detokenizer import MultiThreadedDetokenizer
@@ -37,6 +39,12 @@ class _ResultItem:
 
     def __iter__(self):
         return iter((self.molecule, self.synthesis, self.similarity))
+
+    def get_dag_dict(self):
+        return SynthesisDAG(self.synthesis).to_dict(self.molecule.smiles())
+
+    def get_image(self):
+        return SynthesisDraw().draw(self.synthesis, highlight_smiles=self.molecule.smiles())
 
 
 @dataclass
