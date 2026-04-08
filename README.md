@@ -13,10 +13,10 @@ synthesis*](https://arxiv.org/abs/2406.04628) (a molecular representation based 
 PrexSyn is trained on a billion-scale datastream of postfix notations paired with molecular descriptors using only two GPUs and 32 CPU cores in two days. This is made possible by [PrexSyn Engine](https://github.com/luost26/prexsyn-engine), a real-time, high-throughput C++-based data generation pipeline.
 
 
-[[Documentation](https://prexsyn.readthedocs.io)]
-[[Paper](https://arxiv.org/abs/2512.00384)]
-[[PrexSyn Engine](https://github.com/luost26/prexsyn-engine)]
-[[Data and Model Weights](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)]
+[[Documentation]](https://prexsyn.readthedocs.io)
+[[Paper]](https://arxiv.org/abs/2512.00384)
+[[PrexSyn Engine]](https://github.com/luost26/prexsyn-engine)
+[[Data and Model Weights]](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 
 ## 🚧 This is the working branch for PrexSyn v1
 
@@ -30,9 +30,9 @@ If you need to use the legacy version of PrexSyn (v0), please switch to the [`de
 
 | Capability | Input | Output | Performance |
 | :---: | :---: | :---: | :---: |
-| **Chemical space projection** | ![](docs/imgs/proj-in.png) | ![](docs/imgs/proj-out.png) <br/> | ![](docs/imgs/projection-compare.png) |
-| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) | ![](docs/imgs/proj-out.png) <br/>  |  |
-| **Molecular sampling** | ![](docs/imgs/sample-in.png) <br/> Scoring functions | ![](docs/imgs/sample-out.png) <br/> | ![](docs/imgs/sampling-compare-1.png) |
+| **Chemical space projection** | ![](docs/imgs/proj-in.png) <br/> Graph/SMILES | ![](docs/imgs/proj-out.png) <br/> Synthesis routes | ![](docs/imgs/projection-compare.png) |
+| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) <br/> Fingerprint/descriptor | ![](docs/imgs/proj-out.png) <br/> Synthesis routes | ![](docs/imgs/projection-compare.png) |
+| **Molecular sampling** | ![](docs/imgs/sample-in.png) <br/> Scoring functions | ![](docs/imgs/sample-out.png) <br/> Synthesis routes | ![](docs/imgs/sampling-compare-1.png) |
 
 
 ## Usage
