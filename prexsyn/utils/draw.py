@@ -5,9 +5,12 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, cast
 
+import matplotlib.pyplot as plt
+import numpy as np
 import PIL.Image
 import pydot
 import rdkit.Chem
+from matplotlib import cm
 from rdkit.Chem import Draw
 from rdkit.Chem.rdDepictor import Compute2DCoords
 
@@ -168,3 +171,96 @@ def make_grid(images: list[PIL.Image.Image]) -> PIL.Image.Image:
         y = height * (i // num_cols) + (height - image.size[1]) // 2
         grid.paste(image, (x, y))
     return grid
+
+
+def draw_fingerprint(fp: np.ndarray, grid_shape: tuple[int, int] = (8, 48), dpi: int = 200) -> PIL.Image.Image:
+    """Visualize a binary fingerprint on a user-specified 2D grid."""
+    bits = np.asarray(fp).astype(bool).ravel()
+    rows, cols = grid_shape
+    if rows <= 0 or cols <= 0:
+        raise ValueError("grid_shape must contain positive rows and cols")
+    n_grid_cells = rows * cols
+
+    n_shades_per_side = 8
+    cmap = cm.get_cmap("tab10", n_shades_per_side * 2)
+    desat_mix = 0.28
+    neutral = np.array([0.90, 0.90, 0.90], dtype=float)
+
+    color_sum = np.zeros((n_grid_cells, 3), dtype=float)
+    color_count = np.zeros(n_grid_cells, dtype=int)
+    occupied = np.zeros(n_grid_cells, dtype=bool)
+
+    neighbor_offsets = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1),
+        (-1, -1),
+        (-1, 1),
+        (1, -1),
+        (1, 1),
+    ]
+
+    for idx in np.flatnonzero(bits):
+        mapped_idx = int(idx % n_grid_cells)
+        mapped_r, mapped_c = divmod(mapped_idx, cols)
+
+        placed_idx = mapped_idx
+        if occupied[mapped_idx]:
+            for dr, dc in neighbor_offsets:
+                rr = mapped_r + dr
+                cc = mapped_c + dc
+                if rr < 0 or rr >= rows or cc < 0 or cc >= cols:
+                    continue
+                candidate_idx = rr * cols + cc
+                if not occupied[candidate_idx]:
+                    placed_idx = candidate_idx
+                    break
+
+        # Color is strictly a function of the original bit dimension (idx).
+        h = ((idx * 2654435761) & 0xFFFFFFFF) / 0xFFFFFFFF
+        palette_bins = n_shades_per_side * 2
+        palette_idx = min(int(h * palette_bins), palette_bins - 1)
+
+        base = np.array(cmap(palette_idx)[:3], dtype=float)
+        bit_color = (1.0 - desat_mix) * base + desat_mix * neutral
+        color_sum[placed_idx] += bit_color
+        color_count[placed_idx] += 1
+        occupied[placed_idx] = True
+
+    active_mask = color_count > 0
+    active_idx = np.flatnonzero(active_mask)
+    rgb_flat = np.ones((n_grid_cells, 3), dtype=float)
+    rgb_flat[active_idx] = color_sum[active_idx] / color_count[active_idx, None]
+
+    fig_w = max(3.4, cols * 0.095)
+    fig_h = max(2.6, rows * 0.095)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h), dpi=dpi)
+
+    # Draw all valid bit positions as faint circles to keep structure visible.
+    all_idx = np.arange(n_grid_cells)
+    all_r = all_idx // cols
+    all_c = all_idx % cols
+    ax.scatter(all_c, all_r, s=18, c="#F1F1F1", marker="o", linewidths=0)
+
+    # Draw active bits as colored circles with a soft halo for tiny previews.
+    active_r = active_idx // cols
+    active_c = active_idx % cols
+    active_colors = rgb_flat[active_idx]
+    density = np.clip(color_count[active_idx], 1, 6)
+    halo_sizes = 95 + 18 * density
+    core_sizes = 40 + 10 * density
+    ax.scatter(active_c, active_r, s=halo_sizes, c=active_colors, marker="o", alpha=0.24, linewidths=0)
+    ax.scatter(active_c, active_r, s=core_sizes, c=active_colors, marker="o", alpha=0.98, linewidths=0)
+
+    ax.set_xlim(-0.6, cols - 0.4)
+    ax.set_ylim(rows - 0.4, -0.6)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    fig.subplots_adjust(left=0, right=1, top=1, bottom=0)
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight", pad_inches=0)
+    plt.close(fig)
+    buf.seek(0)
+    return PIL.Image.open(buf)
