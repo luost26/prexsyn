@@ -40,7 +40,7 @@ class _ResultItem:
     def __iter__(self):
         return iter((self.molecule, self.synthesis, self.similarity))
 
-    def get_dag_dict(self):
+    def get_tree(self):
         return SynthesisDAG(self.synthesis).to_dict(self.molecule.smiles())
 
     def get_image(self):
@@ -59,19 +59,25 @@ class _Result:
         return self.items[index]
 
     def best(self):
+        if not self.items:
+            return None
         best_item = max(self.items, key=lambda item: item.similarity)
         return best_item
 
     def best_similarity(self):
-        if not self.items:
+        best = self.best()
+        if best is None:
             return 0.0
-        return self.best().similarity
+        return best.similarity
 
 
 @dataclass
 class _BatchedResult:
     results: list[_Result]
     time: _Time
+
+    def __len__(self):
+        return len(self.results)
 
     @overload
     def __getitem__(self, index: int) -> _Result: ...

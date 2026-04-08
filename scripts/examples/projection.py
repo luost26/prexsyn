@@ -51,7 +51,7 @@ def main(
         out_dict: dict[str, object] = {
             "Target": smiles,
             "Similarity": item.similarity,
-            **item.get_dag_dict(),
+            **item.get_tree(),
         }
         print(yaml.dump([out_dict], sort_keys=False))
 
