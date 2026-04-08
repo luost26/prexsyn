@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from pathlib import Path
 
 import click
 import numpy as np
@@ -6,7 +7,7 @@ import torch
 from rdkit.Chem import QED
 
 from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
-from prexsyn.shortcuts.genetic import evolve, initialize
+from prexsyn.shortcuts.genetic import EvolutionaryTreeDraw, evolve, initialize
 from prexsyn_engine.chemistry import Molecule
 from prexsyn_engine.chemspace import Synthesis
 
@@ -25,10 +26,8 @@ class ExampleScoringFunction:
     default="./data/trained_models/enamine2310_rxn115_202511.yml",
 )
 @click.option("--device", type=str, default="cuda")
-def main(
-    config_path: str,
-    device: str,
-):
+@click.option("--out-fig", type=click.Path(path_type=Path), default=None)
+def main(config_path: str, device: str, out_fig: Path | None):
     torch.set_grad_enabled(False)
     loader = AllInOneLoader(config_path)
     model = loader.model().to(device).eval()
@@ -42,9 +41,19 @@ def main(
     fn = ExampleScoringFunction()
 
     ppl, history = initialize(size=100, projector=projector, fn=fn)
-    for i in range(50):
+    for i in range(20):
         evolve(ppl, history, projector, fn, k=50, t=0.5)
         print(f"step: {i}, best fitness: {ppl.fitnesses.max():.4f}, avg fitness: {ppl.fitnesses.mean():.4f}")
+
+    if out_fig is not None:
+        best_indiv = next(iter(history.individuals.values()))
+        for indiv in history.individuals.values():
+            if indiv.fitness > best_indiv.fitness:
+                best_indiv = indiv
+
+        draw = EvolutionaryTreeDraw()
+        img = draw.draw(best_indiv, history)
+        img.save(out_fig)
 
 
 if __name__ == "__main__":

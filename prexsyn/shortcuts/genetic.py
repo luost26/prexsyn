@@ -1,9 +1,15 @@
+import io
+import tempfile
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TypeAlias
 
 import numpy as np
+import PIL.Image
+import pydot
 
+from prexsyn.utils.draw import draw_fingerprint, draw_molecule
 from prexsyn_engine.chemistry import Molecule
 from prexsyn_engine.chemspace import Synthesis
 from prexsyn_engine.descriptor import _MoleculeDescriptor
@@ -149,7 +155,7 @@ class Individual:
 
 class History:
     def __init__(self):
-        self.individuals: list[Individual] = []
+        self.individuals: dict[int, Individual] = {}
         self.max_unique_id = -1
 
     def add_population(self, population: Population):
@@ -161,11 +167,148 @@ class History:
                 unique_id=int(population.unique_identifiers[i]),
                 parent_ids=tuple(int(p) for p in population.parents[i]),
             )
-            self.individuals.append(individual)
+            self.individuals[individual.unique_id] = individual
             self.max_unique_id = max(self.max_unique_id, individual.unique_id)
 
     def next_unique_id(self):
         return self.max_unique_id + 1
+
+
+class EvolutionaryTreeDraw:
+    """Draw evolutionary trees for individuals in genetic algorithm history."""
+
+    def __init__(self):
+        self.rankdir = "TB"
+        self.fontname = "Fira Sans"
+        self.dpi = 200
+        self.bgcolor = "transparent"
+
+    def _get_individual_by_id(self, history: History, unique_id: int) -> Individual | None:
+        """Find an individual in history by unique_id."""
+        return history.individuals.get(unique_id, None)
+
+    def _collect_tree_nodes(
+        self, individual: Individual, history: History, visited: set[int] | None = None
+    ) -> set[int]:
+        """Recursively collect all node IDs in the evolutionary tree rooted at individual."""
+        if visited is None:
+            visited = set()
+
+        if individual.unique_id in visited:
+            return visited
+
+        visited.add(individual.unique_id)
+
+        for parent_id in individual.parent_ids:
+            if parent_id == -1:
+                continue
+            parent = self._get_individual_by_id(history, parent_id)
+            if parent is not None:
+                self._collect_tree_nodes(parent, history, visited)
+
+        return visited
+
+    def _individual_node(
+        self,
+        node_id: str,
+        individual: Individual,
+        working_dir: Path,
+    ) -> pydot.Node:
+        """Create a pydot node representing an individual with molecule and fingerprint."""
+        mol_path = working_dir / f"{node_id}_mol.png"
+        fp_path = working_dir / f"{node_id}_fp.png"
+
+        # Draw molecule and fingerprint
+        _, mol = individual.phenotype
+        draw_molecule(mol).save(mol_path)
+        draw_fingerprint(individual.genotype, dpi=72).save(fp_path)
+
+        label_lines = ["<"]
+        label_lines += [
+            '<TABLE STYLE="ROUNDED" BORDER="0" CELLBORDER="0" CELLSPACING="5" CELLPADDING="0" BGCOLOR="grey97">',
+            '<TR><TD><IMG SRC="' + mol_path.as_posix() + '"/></TD></TR>',
+            '<TR><TD><IMG SRC="' + fp_path.as_posix() + '"/></TD></TR>',
+            f"<TR><TD>ID: {individual.unique_id}</TD></TR>",
+            f"<TR><TD>Fitness: {individual.fitness:.4f}</TD></TR>",
+            "</TABLE>",
+            ">",
+        ]
+
+        return pydot.Node(
+            node_id,
+            shape="plaintext",
+            label="".join(label_lines),
+            fontsize="10",
+            fontname=self.fontname,
+        )
+
+    def draw(
+        self,
+        individual: Individual,
+        history: History,
+        pdf_output: Path | None = None,
+    ) -> PIL.Image.Image:
+        """Draw the evolutionary tree for a specific individual.
+
+        Args:
+            individual: The individual whose ancestry to visualize
+            history: The evolutionary history containing all individuals
+            pdf_output: Optional path to save PDF output
+
+        Returns:
+            PIL.Image.Image: The rendered tree visualization
+        """
+        node_id_to_str: dict[int, str] = {}
+
+        def _get_node_id(unique_id: int) -> str:
+            if unique_id not in node_id_to_str:
+                node_id_str = f"ind_{len(node_id_to_str)}"
+                node_id_to_str[unique_id] = node_id_str
+            return node_id_to_str[unique_id]
+
+        with tempfile.TemporaryDirectory() as working_dir_str:
+            working_dir = Path(working_dir_str)
+            P = pydot.Dot(
+                "",
+                graph_type="digraph",
+                rankdir=self.rankdir,
+                fontname=self.fontname,
+                fontsize=8,
+                dpi=self.dpi,
+                bgcolor=self.bgcolor,
+                nodesep=0.1,
+            )
+
+            # Collect all nodes in the tree
+            tree_node_ids = self._collect_tree_nodes(individual, history)
+
+            # Add all nodes to the graph
+            for unique_id in tree_node_ids:
+                ind = self._get_individual_by_id(history, unique_id)
+                if ind is not None:
+                    P.add_node(self._individual_node(_get_node_id(unique_id), ind, working_dir))
+
+            # Add edges from parents to children
+            for unique_id in tree_node_ids:
+                ind = self._get_individual_by_id(history, unique_id)
+                if ind is not None:
+                    for parent_id in ind.parent_ids:
+                        if parent_id == -1:
+                            continue
+                        if parent_id in tree_node_ids:
+                            P.add_edge(
+                                pydot.Edge(
+                                    P.get_node(_get_node_id(parent_id))[0],
+                                    P.get_node(_get_node_id(unique_id))[0],
+                                    fontsize=8,
+                                    fontname=self.fontname,
+                                )
+                            )
+
+            if pdf_output is not None:
+                P.write_pdf(pdf_output)  # type: ignore[attr-defined]
+
+            return PIL.Image.open(io.BytesIO(P.create_png()))  # type: ignore[attr-defined]
 
 
 def initialize(size: int, projector: MoleculeProjector, fn: _FitnessFunction):
