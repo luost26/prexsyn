@@ -2541,15 +2541,15 @@ provides-extras = ["eval", "dev"]
 
 [[package]]
 name = "prexsyn-engine"
-version = "1.0.0.dev5"
+version = "1.0.0.dev6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/06/47/dd20a497becd5c311ad02c885c36c42dd8c98431393fea8eeaf13841c577/prexsyn_engine-1.0.0.dev5.tar.gz", hash = "sha256:de32a0f812c67753479c0e50d32dec5204d6a0d22de660ecd614d65a2dd9708a", size = 205794, upload-time = "2026-04-06T15:20:05.926Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/03/eafde1da84d0697e7dfc82aebae4300c0fb731f5b74db30255512751a4e9/prexsyn_engine-1.0.0.dev6.tar.gz", hash = "sha256:9723f9b06fb33239dda3b077970ec3131cfb0db4b1a655c66175dcc09ac3a157", size = 207646, upload-time = "2026-04-07T21:40:34.891Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/58/af27f771648d385e5c50ad34995138304c78c0e8d67bb92ea86be648b915/prexsyn_engine-1.0.0.dev5-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:9552f8fb032df5f390f56f2cb3977eb2ba22af6d03ab85b1a7175804a780d910", size = 3450081, upload-time = "2026-04-06T15:19:56.574Z" },
-    { url = "https://files.pythonhosted.org/packages/b1/5b/545e0b70ab80c005453da24bd1e7ce5236b4735012003e49ed10a990fc5d/prexsyn_engine-1.0.0.dev5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8229207f4f578d2adab284bddbc6f54419c045031f25fe68d4d186cd8d779682", size = 3445018, upload-time = "2026-04-06T15:19:58.615Z" },
-    { url = "https://files.pythonhosted.org/packages/50/cb/6e199c7dbb1ad3406d3a2e37ab03589b6f0742414e416109cb703777a429/prexsyn_engine-1.0.0.dev5-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:63936661a8a91bc51c57b49bcda3400db78b80df9af804005effd46f4eccb6a0", size = 3445464, upload-time = "2026-04-06T15:20:00.813Z" },
-    { url = "https://files.pythonhosted.org/packages/3f/d7/ccaa7e1f3bf681f0e3a6a37229d7b47b1653638e5c32d5053042c1510121/prexsyn_engine-1.0.0.dev5-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:172be4852c9e68d4e8d779da59633a1db7b399c72e298fa50710640afed58ae1", size = 3445495, upload-time = "2026-04-06T15:20:02.799Z" },
-    { url = "https://files.pythonhosted.org/packages/2c/5f/7552cc73774a6973625fccc202bacbdb66fb3703504ae4b64f63615ebc81/prexsyn_engine-1.0.0.dev5-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:90f752b65eb45885b93647806a0016e55079074e4f846c1a7095ae2cf50472a4", size = 3454895, upload-time = "2026-04-06T15:20:04.401Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/9c/04363825ec786feb0a7bf9ad06d9e020d0a7fc97a22827411868a8a65672/prexsyn_engine-1.0.0.dev6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f11dcbb8a521acc218b3589458cc387db1bc931bdb436c595d287401ee65080e", size = 3495860, upload-time = "2026-04-07T21:40:26.138Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/55/7300920373180662bb39402bd75b3490a100f47f237eb4d462122328bdd7/prexsyn_engine-1.0.0.dev6-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:e9ce362970ed3f6953e0f8542a2895e3df9b3bd99897838394b380206d045135", size = 3489324, upload-time = "2026-04-07T21:40:28.116Z" },
+    { url = "https://files.pythonhosted.org/packages/20/77/256fc44fafea321eec913d324f24e7262ef5b7f4e4c8fc812499450627e8/prexsyn_engine-1.0.0.dev6-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:5e06e12d8f9ec5d46b5492f356c103a1cf2ad03cd5dd15c600ea3492d4dfa600", size = 3489646, upload-time = "2026-04-07T21:40:29.74Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/23/14185018f7c686e13046b30febe338d54d8bec45f1cf3a755247b5139690/prexsyn_engine-1.0.0.dev6-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3636e43fc542085f77f06177eb7e6174cb1c841ae5410c6d75a85a6a8bace7a0", size = 3489565, upload-time = "2026-04-07T21:40:31.522Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/2f/1e9c24d63e6f33bf5eaf4b47c3c08911928693efa8e4793d201ec5f9a7ad/prexsyn_engine-1.0.0.dev6-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:da7d9fdadf10eac91307dfd2a1e96b0b72744fd342e2406abcb23f616aa3e258", size = 3499421, upload-time = "2026-04-07T21:40:33.374Z" },
 ]
 
 [[package]]
