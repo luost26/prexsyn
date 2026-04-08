@@ -30,9 +30,9 @@ If you need to use the legacy version of PrexSyn (v0), please switch to the [`de
 
 | Capability | Input | Output | Performance |
 | :---: | :---: | :---: | :---: |
-| **Chemical space projection** | ![](docs/imgs/proj-in.png) <br/> Graph/SMILES | ![](docs/imgs/proj-out.png) <br/> Synthesis routes | ![](docs/imgs/projection-compare.png) |
-| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) <br/> Fingerprint/descriptor | ![](docs/imgs/proj-out.png) <br/> Synthesis routes | ![](docs/imgs/projection-compare.png) |
-| **Molecular sampling** | ![](docs/imgs/sample-in.png) <br/> Scoring functions | ![](docs/imgs/sample-out.png) <br/> Synthesis routes | ![](docs/imgs/sampling-compare-1.png) |
+| **Chemical space projection** | ![](docs/imgs/proj-in.png) | ![](docs/imgs/proj-out.png) | ![](docs/imgs/projection-compare.png) |
+| **Fingerprint/descriptor based generation** | ![](docs/imgs/fp-in.png) | ![](docs/imgs/proj-out.png) | ![](docs/imgs/projection-compare.png) |
+| **Molecular sampling** | ![](docs/imgs/sample-in.png) | ![](docs/imgs/sample-out.png) | ![](docs/imgs/sampling-compare-1.png) |
 
 
 ## Usage
