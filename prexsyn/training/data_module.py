@@ -87,11 +87,10 @@ class SynthesisDataModule(L.LightningDataModule):
         if trainer is None:
             raise ValueError("Trainer must be set before accessing train_seeds.")
 
-        global_rank = trainer.global_rank if trainer.world_size > 1 else 0
-        num_threads = self.config.training.data_pipeline_num_threads
-
-        rng = random.Random(self.config.training.val_seed * (global_rank + 1))
+        print(f"Generating train seeds for global rank {trainer.global_rank} and epoch {trainer.current_epoch}...")
+        rng = random.Random(self.config.training.val_seed * (trainer.global_rank + 1) * (trainer.current_epoch + 1))
         seeds: list[int] = []
+        num_threads = self.config.training.data_pipeline_num_threads
         for _ in range(num_threads):
             seeds.append(rng.randint(0, 2**32 - 1))
         return seeds
@@ -109,7 +108,7 @@ class SynthesisDataModule(L.LightningDataModule):
         else:
             self.val_dataset = torch.load(self.val_cache_path)
 
-    def setup(self, stage: str | None = None) -> None:
+    def train_dataloader(self):
         if self.trainer is None:
             raise ValueError("Trainer must be set before calling setup().")
         self.train_dataset = SynthesisDataStream(
@@ -117,8 +116,6 @@ class SynthesisDataModule(L.LightningDataModule):
             virtual_length=self.config.training.val_freq * self.trainer.world_size,
             worker_seeds=self.train_seeds,
         )
-
-    def train_dataloader(self):
         return DataLoader(
             cast(Dataset, self.train_dataset),
             batch_size=None,
