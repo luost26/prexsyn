@@ -1,3 +1,4 @@
+import random
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import lightning as L
@@ -82,7 +83,18 @@ class SynthesisDataModule(L.LightningDataModule):
 
     @property
     def train_seeds(self):
-        return [self.config.training.seed * (i + 1) for i in range(16)]
+        trainer = self.trainer
+        if trainer is None:
+            raise ValueError("Trainer must be set before accessing train_seeds.")
+
+        global_rank = trainer.global_rank if trainer.world_size > 1 else 0
+        num_threads = self.config.training.data_pipeline_num_threads
+
+        rng = random.Random(self.config.training.val_seed * (global_rank + 1))
+        seeds: list[int] = []
+        for _ in range(num_threads):
+            seeds.append(rng.randint(0, 2**32 - 1))
+        return seeds
 
     def prepare_data(self):
         if not self.val_cache_path.exists():
