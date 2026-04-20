@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 
 import prexsyn_engine
 from prexsyn.factory import Config, get_data_pipeline
+from prexsyn.utils.download import download
 
 
 class SynthesisBatch(TypedDict):
@@ -96,6 +97,14 @@ class SynthesisDataModule(L.LightningDataModule):
         return seeds
 
     def prepare_data(self):
+        cs_path = self.config.chemical_space.cache_path
+        if not cs_path.exists():
+            cs_url = self.config.remote.chemical_space_url
+            if cs_url is not None:
+                download(cs_url, cs_path, desc="Downloading chemical space")
+            else:
+                raise FileNotFoundError(f"Chemical space not found at {cs_path} and no remote URL provided.")
+
         if not self.val_cache_path.exists():
             val_stream = SynthesisDataStream(
                 config=self.config,
