@@ -110,8 +110,20 @@ class PrexSynWrapper(L.LightningModule):
             fp_true = self.fingerprint_function(prod_true)
             sim_list.append(float(tanimoto_similarity(fp_true, fp_pred)))
             count_success += 1
-        self.log("val/similarity", float(np.mean(sim_list)), on_step=False, prog_bar=True, logger=True)
-        self.log("val/success_rate", count_success / len(syn_pred_list), on_step=False, prog_bar=False, logger=True)
+        self.log(
+            "val/similarity_sample1",
+            float(np.mean(sim_list)),
+            on_step=False,
+            prog_bar=True,
+            logger=True,
+        )
+        self.log(
+            "val/success_rate_sample1",
+            count_success / len(syn_pred_list),
+            on_step=False,
+            prog_bar=False,
+            logger=True,
+        )
 
         if batch_idx == 0 and isinstance(self.logger, WandbLogger):
             drawer = SynthesisDraw()
