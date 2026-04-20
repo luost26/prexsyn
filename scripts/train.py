@@ -59,7 +59,7 @@ def main(config_path: Path, devices: int, max_epochs: int, ckpt_path: Path | Non
         max_epochs=max_epochs,
     )
 
-    trainer.fit(model, datamodule=dm, ckpt_path=ckpt_path)
+    trainer.fit(model, datamodule=dm, ckpt_path=ckpt_path, weights_only=False)
 
 
 if __name__ == "__main__":
