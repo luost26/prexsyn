@@ -94,7 +94,7 @@ class PrexSynWrapper(L.LightningModule):
         for k, v in loss_dict.items():
             self.log(f"val/loss_{k}", v, on_step=False, prog_bar=False, logger=True)
 
-        sampler = BasicSampler(self.model, num_samples=1)
+        sampler = BasicSampler(self.model, num_samples=1, batch_size_limit=token_types.size(0))
         syn_pred_list = sampler.sample(batch["descriptors"]).detokenize(self.detokenizer)
         syn_true_list = self.detokenizer(batch["synthesis"].cpu().numpy())
         sim_list: list[float] = []

@@ -102,6 +102,7 @@ class MoleculeProjector:
         detokenizer: MultiThreadedDetokenizer,
         descriptor: str,
         num_samples: int,
+        batch_size_limit: int = 64,
     ):
         super().__init__()
         self.model = model
@@ -109,7 +110,7 @@ class MoleculeProjector:
         self.descriptor_name = descriptor
         self.descriptor_function = get_descriptor_constructor(descriptor)()
         self.num_samples = num_samples
-        self.sampler = BasicSampler(model, num_samples)
+        self.sampler = BasicSampler(model, num_samples, batch_size_limit=batch_size_limit)
 
     def _convert_molecule(self, mol: Molecule | str | rdkit.Chem.Mol) -> Molecule:
         if isinstance(mol, Molecule):
