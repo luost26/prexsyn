@@ -28,7 +28,7 @@ training:
   batch_size: 512
   val_freq: 1000
   seed: 2026
-  data_pipeline_num_threads: 16
+  data_pipeline_num_cpus: 15
   val_seed: 2026
   num_val_batches: 10
   loss_weights:

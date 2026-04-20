@@ -2,6 +2,7 @@ import random
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import lightning as L
+import psutil
 import torch
 from torch.utils.data import DataLoader, Dataset
 
@@ -91,7 +92,16 @@ class SynthesisDataModule(L.LightningDataModule):
         print(f"Generating train seeds for global rank {trainer.global_rank} and epoch {trainer.current_epoch}...")
         rng = random.Random(self.config.training.val_seed * (trainer.global_rank + 1) * (trainer.current_epoch + 1))
         seeds: list[int] = []
-        num_threads = self.config.training.data_pipeline_num_threads
+
+        count_phsyical_cores = psutil.cpu_count(logical=False)
+        count_logical_cores = psutil.cpu_count(logical=True)
+
+        if count_phsyical_cores is not None and count_logical_cores is not None:
+            num_threads_per_core = count_logical_cores // count_phsyical_cores
+        else:
+            num_threads_per_core = 1
+
+        num_threads = self.config.training.data_pipeline_num_cpus * num_threads_per_core
         for _ in range(num_threads):
             seeds.append(rng.randint(0, 2**32 - 1))
         return seeds

@@ -4,6 +4,7 @@ note:
   description: |
     Enamine Rush Delivery Building Blocks (US) Oct 2023, initially used in ChemProjector model.
     Rxn115 (115 reactions) template set.
+    The batch size is set to 512 for smaller GPU memory requirements.
 
 remote:
   chemical_space_url: https://huggingface.co/datasets/luost26/prexsyn-data/resolve/main/chemical_spaces/enamine2310_rxn115.chemspace
@@ -31,7 +32,7 @@ model:
   bb_embed_dim: 1024
 
 training:
-  batch_size: 1024
+  batch_size: 512
   val_freq: 2000
   seed: 2026
   data_pipeline_num_cpus: 15

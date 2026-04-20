@@ -51,7 +51,7 @@ class TrainingConfig:
     batch_size: int
     val_freq: int
     seed: int
-    data_pipeline_num_threads: int
+    data_pipeline_num_cpus: int
     num_val_batches: int
     val_seed: int
     loss_weights: dict[str, float]
