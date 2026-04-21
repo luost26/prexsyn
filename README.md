@@ -29,8 +29,57 @@ PrexSyn is trained on a billion-scale datastream of postfix notations paired wit
 
 ## Usage
 
+### Documentation
+
 Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
 
+### Quick example
+
+To run a quick example, make sure [uv](https://docs.astral.sh/uv/) is installed, then clone this repository. The command below is **all you need** to get started. No need to manually configure or download anything! On the first run, the preprocessed chemical space and model checkpoints will be downloaded automatically.
+
+```
+uv run python scripts/examples/projection.py \
+    --smiles "COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1" \
+    --draw-output-dir ./draw
+```
+
+The diagrams of the synthesis pathways will be saved in the `./draw` directory.
+
+![examples](./docs/getting-started/imgs/projection-example.png)
+
+If you need to customize the environment (e.g., specific PyTorch/CUDA versions), please refer to the [installation instructions](https://prexsyn.readthedocs.io/en/latest/getting-started/installation/) for guidance.
+
+### Use PrexSyn in your own project
+
+PrexSyn is designed to be modular and easy to integrate into your own projects. To get started, install PrexSyn directly from this repository (a PyPI release is planned), which will automatically install all required dependencies:
+
+```bash
+pip install git+https://github.com/luost26/prexsyn.git
+```
+
+The example below demonstrates how to use PrexSyn to generate synthesis pathways for a target SMILES string:
+
+```python
+from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
+
+loader = AllInOneLoader(config_path)
+projector = MoleculeProjector(
+    model=loader.model().to(device).eval(),
+    detokenizer=loader.detokenizer(),
+    descriptor="ecfp4",
+    num_samples=num_samples,
+)
+
+result = projector.one("COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1")
+for i, item in enumerate(result.items):
+    print(item.get_tree())  # print the synthesis tree in python dict format
+
+    img = item.get_image()
+    img.save(f"output_{i}.png")  # save the synthesis tree diagram as a PNG image
+    img.close()
+```
+
+More examples can be found in the [`scripts/examples`](./scripts/examples) directory.
 
 ## Upgrade to PrexSyn v1
 
