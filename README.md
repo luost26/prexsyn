@@ -18,14 +18,6 @@ PrexSyn is trained on a billion-scale datastream of postfix notations paired wit
 [[PrexSyn Engine]](https://github.com/luost26/prexsyn-engine)
 [[Data and Model Weights]](https://huggingface.co/datasets/luost26/prexsyn-data/tree/main)
 
-## 🚧 This is the working branch for PrexSyn v1
-
-We are currently in the process of refactoring the main PrexSyn codebase. This effort focuses on (1) integrating the new [PrexSyn Engine](https://github.com/luost26/prexsyn-engine) v1 to improve stability and usability, (2) providing a more robust and user-friendly interface for molecular sampling with arbitrary user-defined objective functions, and (3) enabling customization of user-defined chemical spaces.
-
-The work is expected to be completed in the next few days. Please stay tuned!
-
-If you need to use the legacy version of PrexSyn (v0), please switch to the [`dev-v0`](https://github.com/luost26/prexsyn/tree/dev-v0) branch.
-
 ## Capabilities
 
 | Capability | Input | Output | Performance |
@@ -38,6 +30,20 @@ If you need to use the legacy version of PrexSyn (v0), please switch to the [`de
 ## Usage
 
 Please refer to the [documentation](https://prexsyn.readthedocs.io) for detailed usage instructions on installation, data setup, reproducibility, and customization.
+
+
+## Upgrade to PrexSyn v1
+
+We have substantially refactored both the PrexSyn codebase and the [PrexSyn Engine](https://github.com/luost26/prexsyn-engine) to improve usability, performance, and extensibility. Key updates include:
+
+- ✅ **Improved usability:** PrexSyn Engine is now available via PyPI.
+- ✅ **Higher performance and stability:** Data generation is now approximately 2× faster than reported in the paper, with improved robustness thanks to a more reliable compilation pipeline.
+- ✅ **Greater flexibility:** Chemical space definitions and training workflows are now easier to customize for new use cases.
+- ✅ **Cleaner interfaces:** Simplified and more consistent APIs for projection, fingerprint/descriptor-based generation, and sampling.
+- [ ] Migrate molecular sampling benchmarks to the new codebase.
+
+**Note:** Some features described in the original paper (mostly property-based queries) are no longer supported in the current version of PrexSyn. If you need these features, please use the [v0 branch](https://github.com/luost26/prexsyn/tree/dev-v0).
+
 
 ## Citation
 
