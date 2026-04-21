@@ -62,12 +62,14 @@ The example below demonstrates how to use PrexSyn to generate synthesis pathways
 ```python
 from prexsyn.shortcuts import AllInOneLoader, MoleculeProjector
 
+config_path = "./data/trained_models/enamine2310_rxn115_202511.yml"
+
 loader = AllInOneLoader(config_path)
 projector = MoleculeProjector(
-    model=loader.model().to(device).eval(),
+    model=loader.model().to("cuda").eval(),
     detokenizer=loader.detokenizer(),
     descriptor="ecfp4",
-    num_samples=num_samples,
+    num_samples=16,
 )
 
 result = projector.one("COc1ccc(-c2ccnc(Nc3ccccc3)n2)cc1")
