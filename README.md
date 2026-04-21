@@ -105,4 +105,11 @@ We have substantially refactored both the PrexSyn codebase and the [PrexSyn Engi
   year    = {2025},
   journal = {arXiv preprint arXiv: 2512.00384}
 }
+
+@inproceedings{luo2024chemprojector,
+  title={Projecting Molecules into Synthesizable Chemical Spaces},
+  author={Shitong Luo and Wenhao Gao and Zuofan Wu and Jian Peng and Connor W. Coley and Jianzhu Ma},
+  booktitle={Forty-first International Conference on Machine Learning},
+  year={2024}
+}
 ```
