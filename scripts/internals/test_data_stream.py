@@ -3,8 +3,8 @@ from pathlib import Path
 import click
 from tqdm.auto import tqdm
 
-from prexsyn.training.data_module import SynthesisDataStream
 from prexsyn.factory import Config
+from prexsyn.training.data_module import SynthesisDataStream
 
 
 @click.command()
