@@ -5,11 +5,6 @@ repos:
       - id: ruff-check
         args: [--select, I, --fix]
       - id: ruff-format
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.407
-    hooks:
-      - id: pyright
-        language: system
   - repo: https://github.com/google/yamlfmt
     rev: v0.19.0
     hooks:
