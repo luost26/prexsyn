@@ -40,7 +40,7 @@ We have substantially refactored both the PrexSyn codebase and the [PrexSyn Engi
 - ✅ **Higher performance and stability:** Data generation is now approximately 2× faster than reported in the paper, with improved robustness thanks to a more reliable compilation pipeline.
 - ✅ **Greater flexibility:** Chemical space definitions and training workflows are now easier to customize for new use cases.
 - ✅ **Cleaner interfaces:** Simplified and more consistent APIs for projection, fingerprint/descriptor-based generation, and sampling.
-- [ ] Migrate molecular sampling benchmarks to the new codebase.
+- 🚧 Migrate molecular sampling benchmarks to the new codebase.
 
 **Note:** Some features described in the original paper (mostly property-based queries) are no longer supported in the current version of PrexSyn. If you need these features, please use the [v0 branch](https://github.com/luost26/prexsyn/tree/dev-v0).
 
