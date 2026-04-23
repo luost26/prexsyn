@@ -35,7 +35,7 @@ Source = "https://github.com/luost26/prexsyn"
 [project.optional-dependencies]
 eval = [
     ## GuacaMol
-    "prexsyn-third-party @ git+https://github.com/luost26/prexsyn-third-party.git",
+    # "prexsyn-third-party @ git+https://github.com/luost26/prexsyn-third-party.git",
     ## sEH proxy
     "torch_geometric",
     ## Autodock
