@@ -2497,7 +2497,6 @@ eval = [
     { name = "gemmi" },
     { name = "meeko" },
     { name = "molscrub" },
-    { name = "prexsyn-third-party" },
     { name = "torch-geometric" },
 ]
 
@@ -2523,7 +2522,6 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pre-commit", marker = "extra == 'dev'" },
     { name = "prexsyn-engine", specifier = ">=1.1.0,<1.2.0" },
-    { name = "prexsyn-third-party", marker = "extra == 'eval'", git = "https://github.com/luost26/prexsyn-third-party.git" },
     { name = "psutil", specifier = ">=7.2.2" },
     { name = "pydot", specifier = ">=4.0.1" },
     { name = "pyright", marker = "extra == 'dev'" },
@@ -2553,11 +2551,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/48/5292e23805300a362df3cffa9652a1d1e16695a49ac179723b34545b6de4/prexsyn_engine-1.1.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4d09b618db58c600b2b610e6416eaeb83a3479515dff674d13d7ad6a5151490c", size = 3502132, upload-time = "2026-04-20T18:21:15.469Z" },
     { url = "https://files.pythonhosted.org/packages/bd/92/26efe38019bc59f1abf9a3f011ee933c44190f0149d5c281e262c1edf01c/prexsyn_engine-1.1.0-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f8883aa503cb99ba23a495db2a5735efd90862ef53520f6aafb5345e390f7117", size = 3512362, upload-time = "2026-04-20T18:21:17.085Z" },
 ]
-
-[[package]]
-name = "prexsyn-third-party"
-version = "0.1"
-source = { git = "https://github.com/luost26/prexsyn-third-party.git#13f95ddabb37a4443b65e190ab876fc3c505af9a" }
 
 [[package]]
 name = "prompt-toolkit"
