@@ -135,8 +135,8 @@ class BasicSampler:
             chunked_descriptors.extend(self._chunk_descriptor(descriptor))
 
         builders: list[SynthesisTensorBuilder] = []
-        for _ in range(self.num_samples):
-            for descriptor_chunk in chunked_descriptors:
-                builders.append(self._sample_once([descriptor_chunk]))
+        for name, values in chunked_descriptors:
+            expanded_values = values.repeat_interleave(self.num_samples, dim=0)
+            builders.append(self._sample_once([(name, expanded_values)]))
 
         return self._concat_builders(builders)
