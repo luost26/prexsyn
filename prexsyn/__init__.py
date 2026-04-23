@@ -1,4 +1,4 @@
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 try:
     import prexsyn_engine  # noqa: F401
