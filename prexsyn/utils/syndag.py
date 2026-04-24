@@ -70,7 +70,13 @@ class SynthesisDAG:
     def products(self):
         return [node for node in self.nodes.values() if len(node.successors) == 0]
 
-    def to_dict(self, node_key: str):
+    def to_dict(self, node_key: str, visited: set[str] | None = None):
+        if visited is None:
+            visited = set()
+        if node_key in visited:
+            return {"SMILES": self.nodes[node_key].mol.smiles(), "Note": "Cycle detected"}
+        visited.add(node_key)
+
         node = self.nodes[node_key]
         d: dict[str, object] = {"SMILES": node.mol.smiles()}
         if node.building_block is not None:
@@ -82,6 +88,6 @@ class SynthesisDAG:
             for prec_dict in node.precursors:
                 prec_entry: dict[str, object] = {}
                 for reactant_name, prec_key in prec_dict.items():
-                    prec_entry[reactant_name] = self.to_dict(prec_key)
+                    prec_entry[reactant_name] = self.to_dict(prec_key, visited)
                 d["Precursors"].append(prec_entry)
         return d
