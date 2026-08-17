@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.7
+    rev: v0.16.3
     hooks:
       - id: ruff-check
         args: [--select, I, --fix]
       - id: ruff-format
   - repo: https://github.com/google/yamlfmt
-    rev: v0.19.0
+    rev: v0.21.0
     hooks:
       - id: yamlfmt
